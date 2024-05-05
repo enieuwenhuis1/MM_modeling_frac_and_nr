@@ -1,0 +1,99 @@
+Author:       Eva Nieuwenhuis
+University:   UvA
+Student ID:   13717405
+
+MATHEMATICAL MODEL MULTIPLE MYELOMA
+The goal was to make fraction and number models that simulate the interactions
+between four cell types In the MM microenvironment: drug-sensitive MM cells (MMd),
+resistant MM cells (MMr), osteoblasts (OBs) and osteoclasts (OCs). All models
+used collective interactions and were made in the framework of evolutionary game
+theory. The models were used determine the effect of traditional therapy and
+adaptive therapy to study the impact of the inhibitors (IHs) on the cell type
+fractions and numbers for different strengths, administration durations and
+holiday durations. In addition the IH holiday duration, administration duration
+and strength were optimised.
+
+
+PYTHON AND LIBRARY VERSION
+The models were written in Python code (version 3.11.4) using Atom (version 1.60.0).
+Some libraries need to be installed to run the codes in the code folder.
+
+
+Libraries that need to be installed for MM_model_frac_IH_inf.py,
+MM_model_nr_IH_inf.py and MM_model_nr_IH_inf_mutation.py:
+* numpy (version 1.26.0)
+    - install: pip install numpy==1.26.0
+* matplotlib (version 3.8.0)
+    - install: pip install matplotlib==3.8.0
+* pandas (version 2.1.3)
+    - install: pip install pandas==2.1.3
+* scipy (version 1.11.4)
+    - install: pip install scipy==1.11.4
+
+
+FRACTION MODEL: MM_model_frac_IH_inf.py
+MM_model_frac_IH_inf.py contains the code with the mathematical formulas simulating
+the fraction dynamics of the four cell types MMd, MMr, OCs and OBs in the MM
+microenvironment. It contains the code to make the figures showing the effect of
+the WMMd IH, MMd GF IH and IH combination for different administration periods
+and strengths on the cell type fractions. The IHs not only affect the MMd but also
+the OC and OB.
+
+NUMBER MODEL WITHOUT RESISTANCE MUTATIONS: MM_model_nr_IH_inf.py
+MM_model_nr_IH_inf.py contains the code with the mathematical formulas simulating
+the number dynamics of the four cell types MMd, MMr, OCs and OBs in the MM
+microenvironment. It contains the code to make the figures showing the effect of
+the WMMd IH, MMd GF IH and IH combination for different administration periods
+and strengths on the cell type numbers. Furthermore, it contains an optimisation
+strategy to find the best holiday duration, administration duration and IH strength
+simultaneously. The IHs not only affect the MMd but also the OC and OB.
+
+NUMBER MODEL WITH RESISTANCE MUTATIONS: MM_model_nr_IH_inf_mutation.py
+MM_model_nr_IH_inf_mutation.py contains the code with the mathematical formulas
+simulating the number dynamics of the four cell types MMd, MMr, OCs and OBs in
+the MM microenvironment. The MMd can become MMr via a mutation that happens at
+a specified rate. It contains the code to make figures showing the effect of the
+WMMd  IH, the MMd GF IH and a combination of different administration periods
+and strengths on the cell type numbers. Furthermore, it contains an optimisation
+strategy to find the best administration duration, holiday duration and IH
+strength simultaneously. The IHs not only affect the MMd but also the OC and OB.
+
+
+TEST THE CODES
+To test some of the functions in every code file, doc tests are added to the code.
+These are automatically run when the specific function in the code file is run.
+
+
+THE DATA
+The folder data contains a folder per model with all the generated data that is
+used to make figures and tables. The folders data contains are:
+* data_model_frac_IH_inf: contains all the data obtained from the model simulating
+                          cell type fractions.
+* data_model_nr_IH_inf: contains all the data obtained from the model simulating
+                          cell type numbers without resistance mutations.
+* data_model_nr_IH_inf_mutation: contains all the data obtained from the model
+                          simulating cell type numbers with resistance mutations
+
+
+THE VISUALISATION
+The folder visualisation contains a folder per model in which all the made figures
+are stored. The folders which visualisation contains are:
+* results_model_frac_IH_inf: contains all the figures obtained from the model
+                            simulating cell-type fractions.
+* results_model_nr_IH_inf; contains all the figures obtained from the model
+                            simulating cell type numbers without resistance
+                            mutations.
+* results_model_nr_IH_inf_mutation: contains all the figures obtained from the
+                            model simulating cell type numbers with resistance
+                            mutation.
+
+
+HOW TO RUN THE CODES
+Fraction model, MM_model_frac_IH_inf.py
+        - python MM_model_frac_IH_inf.py
+
+Number model without resistance mutations, MM_model_nr_IH_inf.py
+        - python MM_model_nr_IH_inf.py
+
+Number model with resistance mutations, MM_model_nr_IH_inf_mutation.py
+        - python MM_model_nr_IH_inf_mutation.py
