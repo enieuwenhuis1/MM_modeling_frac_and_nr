@@ -8,7 +8,7 @@ Description:  Code with the model that simulates the dynamics in the multiple
               osteoclasts (OC). The model is a public goods game in the framework
               of evolutionary game theory with collective interactions and linear
               benefits. In this model, there is looked at the fractions of the
-              four cell types.The IHs have not only an influence on the MMd but
+              four cell types. The IHs have not only an influence on the MMd but
               also on the OB and OC.
 
 Example interaction matrix:
