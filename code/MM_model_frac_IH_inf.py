@@ -10,6 +10,14 @@ Description:  Code with the model that simulates the dynamics in the multiple
               benefits. In this model, there is looked at the fractions of the
               four cell types.The IHs have not only an influence on the MMd but
               also on the OB and OC.
+
+Example interaction matrix:
+M = np.array([
+       Foc Fob Fmmd Fmmr
+    OC  [a,  b,  c,  d],
+    OB  [e,  f,  g,  h],
+    MMd [i,  j,  k,  l],
+    MMr [m,  n,  o,  p]])
 """
 
 # Import the needed libraries
@@ -24,16 +32,6 @@ from scipy.optimize import minimize
 from mpl_toolkits.mplot3d import Axes3D
 import doctest
 
-"""
-Example interaction matrix:
-M = np.array([
-       Goc Gob Gmmd Gmmr
-    OC  [a,  b,  c,  d],
-    OB  [e,  f,  g,  h],
-    MMd [i,  j,  k,  l],
-    MMr [m,  n,  o,  p]])
-"""
-
 def main():
     # Do doc tests
     doctest.testmod()
@@ -46,7 +44,6 @@ def main():
     # Make a 3D figure showthing the effect of different drug holiday and
     # administration periods
     Figure_3D_MM_frac_IH_add_and_holiday()
-
 
 
 def fitness_WOC(xOC, xOB, xMMd, xMMr, N, cOC, cOB, cMMd, cMMr, matrix):
@@ -375,9 +372,10 @@ def frac_to_fitness_values(dataframe_fractions, N, cOC, cOB, cMMd, cMMr, matrix,
         # Determine the fitness values
         WOC = fitness_WOC(xOC, xOB, xMMd, xMMr, N, cOC, cOB, cMMd, cMMr, matrix)
         WOB = fitness_WOB(xOC, xOB, xMMd, xMMr,  N, cOC, cOB, cMMd, cMMr, matrix)
-        WMMd = fitness_WMMd(xOC, xOB, xMMd, xMMr, N, cOC, cOB, cMMd, cMMr, matrix,
-                                                                WMMd_inhibitor)
-        WMMr = fitness_WMMr(xOC, xOB, xMMd, xMMr, N, cOC, cOB, cMMd, cMMr, matrix)
+        WMMd = fitness_WMMd(xOC, xOB, xMMd, xMMr, N, cOC, cOB, cMMd, cMMr,
+                                                        matrix, WMMd_inhibitor)
+        WMMr = fitness_WMMr(xOC, xOB, xMMd, xMMr, N, cOC, cOB, cMMd, cMMr,
+                                                                        matrix)
 
         # Determine the average fitness
         W_average = xOC * WOC + xOB * WOB + xMMd * WMMd + xMMr * WMMr
@@ -427,7 +425,6 @@ def save_Figure(Figure, file_name, folder_path):
     """
     os.makedirs(folder_path, exist_ok=True)
     Figure.savefig(os.path.join(folder_path, file_name))
-
 
 def switch_dataframe(time_start_drugs, n_switches, t_steps_drug, t_steps_no_drug,
                 xOC, xOB, xMMd, xMMr, N, cOC, cOB, cMMd, cMMr, cOC_IH, cOB_IH,
@@ -559,7 +556,6 @@ def switch_dataframe(time_start_drugs, n_switches, t_steps_drug, t_steps_no_drug
 
     return df_total_switch
 
-
 def continuous_add_IH_df(time_start_drugs, end_generation, xOC, xOB, xMMd, xMMr,
         N, cOC, cOB, cMMd, cMMr, cOC_IH, cOB_IH, matrix_no_GF_IH, matrix_GF_IH,
         WMMd_inhibitor = 0):
@@ -629,7 +625,7 @@ def continuous_add_IH_df(time_start_drugs, end_generation, xOC, xOB, xMMd, xMMr,
     # Determine the ODE solutions
     y = odeint(model_dynamics, y0, t, args=parameters)
     df_2 = pd.DataFrame({'Generation': t, 'xOC': y[:, 0], 'xOB': y[:, 1],
-                'xMMd': y[:, 2], 'xMMr': y[:, 3], 'total xMM': y[:, 3]+ y[:, 2]})
+            'xMMd': y[:, 2], 'xMMr': y[:, 3], 'total xMM': y[:, 3]+ y[:, 2]})
 
     # Combine the dataframes
     df_total = pd.concat([df_1, df_2])
@@ -704,9 +700,9 @@ def minimal_tumour_frac_t_steps(t_steps_drug, t_steps_no_drug, xOC, xOB, xMMd,
     n_switches = int((110 // time_step) -1)
 
     # Create a dataframe of the fractions
-    df = switch_dataframe(15, n_switches, t_steps_drug, t_steps_no_drug, xOC, xOB,
-                            xMMd, xMMr, N, cOC, cOB, cMMd, cMMr, cOC_IH, cOB_IH,
-                             matrix_no_GF_IH, matrix_GF_IH, WMMd_inhibitor)
+    df = switch_dataframe(15, n_switches, t_steps_drug, t_steps_no_drug, xOC,
+                    xOB, xMMd, xMMr, N, cOC, cOB, cMMd, cMMr, cOC_IH, cOB_IH,
+                    matrix_no_GF_IH, matrix_GF_IH, WMMd_inhibitor)
 
     # Determine the average MM fraction in the last period with and without drugs
     last_MM_fractions = df['total xMM'].tail(int(time_step *2))
@@ -768,7 +764,6 @@ def x_y_z_axis_values_3d_plot(dataframe, name):
         Z_values[j, i] = row.iloc[2]
 
     return (X_values, Y_values, Z_values)
-
 
 """ Figure to determine the difference between traditional and adaptive therapy"""
 def Figure_continuous_MTD_vs_AT_s_and_w_a_h(n_switches, t_steps_drug):
@@ -1108,7 +1103,7 @@ def Figure_3D_MM_frac_IH_add_and_holiday():
                                                             ignore_index=True)
 
     # Save the data
-    save_dataframe(df_holiday_comb, 'df_cell_frac_IH_best_MMd_IH_holiday.csv',
+    save_dataframe(df_holiday_comb, 'df_cell_frac_IH_best_comb_IH_holiday.csv',
                                          r'..\data\data_model_frac_IH_inf')
 
     # Determine the axis values
