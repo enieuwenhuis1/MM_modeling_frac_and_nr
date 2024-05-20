@@ -214,10 +214,10 @@ def fitness_WMMr(xOC, xOB, xMMd, xMMr, N, cOC, cOB, cMMd, cMMr, matrix):
         Fraction of OC.
     xOB: Float
         Fraction of OB.
-    xMMr: Float
-        Fraction of the MMr.
     xMMd: Float
         Fraction of the MMd.
+    xMMr: Float
+        Fraction of the MMr.
     N: Int
         Fraction of individuals within the interaction range.
     cOC: Float
@@ -770,7 +770,7 @@ def Figure_continuous_MTD_vs_AT_s_and_w_a_h(n_switches, t_steps_drug):
     """ Function that makes a figure with 6 subplots showing the cell type
     fraction dynamics by traditional therapy (continuous MTD) and adaptive
     therapy.The holiday and administration periods are 5 generations. It also
-    prints the number values in the new equilibrium during adaptive and
+    prints the fraction values in the new equilibrium during adaptive and
     traditional therapy.
 
     Parameters:
@@ -810,7 +810,7 @@ def Figure_continuous_MTD_vs_AT_s_and_w_a_h(n_switches, t_steps_drug):
         [1.9, 0, -0.8, 0.4]])
 
     # Payoff matrix when both inhibitor drugs are present
-    matrix_GF_IH_comb = np.array([
+    matrix_IH_comb = np.array([
         [0.0, 1.4, 2.2, 1.5],
         [0.95, 0.0, -0.5, -0.5],
         [1.28, 0.0, 0.2, 0.0],
@@ -831,7 +831,7 @@ def Figure_continuous_MTD_vs_AT_s_and_w_a_h(n_switches, t_steps_drug):
                 cOC_IH, cOB_IH, matrix_no_GF_IH, matrix_no_GF_IH, WMMd_inhibitor)
     df_total_switch_comb = switch_dataframe(10, n_switches, t_steps_drug[2],
                 t_steps_drug[2], xOC, xOB, xMMd, xMMr, N, cOC, cOB, cMMd, cMMr,
-                cOC_IH, cOB_IH, matrix_no_GF_IH, matrix_GF_IH_comb,
+                cOC_IH, cOB_IH, matrix_no_GF_IH, matrix_IH_comb,
                 WMMd_inhibitor_comb)
 
     # Make dataframes for continiously administration
@@ -842,7 +842,7 @@ def Figure_continuous_MTD_vs_AT_s_and_w_a_h(n_switches, t_steps_drug):
                             matrix_no_GF_IH, WMMd_inhibitor)
     df_total_comb = continuous_add_IH_df(10, 100, xOC, xOB, xMMd, xMMr, N, cOC,
                             cOB, cMMd, cMMr, cOC_IH, cOB_IH, matrix_no_GF_IH,
-                            matrix_GF_IH_comb, WMMd_inhibitor_comb)
+                            matrix_IH_comb, WMMd_inhibitor_comb)
 
     # Print the equilibrium MMd and MMr values caused by the adaptive therapy
     last_MMd_fractions_GF = df_total_switch_GF['xMMd'].tail(int(10))
@@ -1017,7 +1017,7 @@ def Figure_3D_MM_frac_IH_add_and_holiday():
         [1.9, 0, -0.8, 0.4]])
 
     # Payoff matrix when both inhibitor drugs are present
-    matrix_GF_IH_comb = np.array([
+    matrix_IH_comb = np.array([
         [0.0, 1.4, 2.2, 1.6],
         [0.95, 0.0, -0.5, -0.5],
         [1.1, 0, 0.2, 0.0],
@@ -1092,7 +1092,7 @@ def Figure_3D_MM_frac_IH_add_and_holiday():
         for t_steps_drug in range(2, 22):
             frac_tumour = minimal_tumour_frac_t_steps(t_steps_drug,
                         t_steps_no_drug, xOC, xOB, xMMd, xMMr, N, cOC, cOB, cMMd,
-                        cMMr, cOC_IH, cOB_IH, matrix_no_GF_IH, matrix_GF_IH_comb,
+                        cMMr, cOC_IH, cOB_IH, matrix_no_GF_IH, matrix_IH_comb,
                         WMMd_inhibitor_comb)
 
             # Add results to the dataframe
