@@ -1,7 +1,8 @@
 """
-Author:       Eva Nieuwenhuis
-University:   Biosystems Data Analysis Group, UvA
-Student id:   13717405
+Author:            Eva Nieuwenhuis
+University group:  Biosystems Data Analysis Group, UvA
+Student ID:        13717405
+
 Description:  Code with the model that simulates the dynamics in the multiple
               myeloma (MM) microenvironment with four cell types: drug-sensitive
               MM cells (MMd), resistant MM cells (MMr), osteoblasts (OB) and
@@ -916,7 +917,7 @@ def Figure_continuous_MTD_vs_AT_s_and_w_a_h(n_switches, t_steps_drug):
     axs[0, 0].set_title(f"Traditional therapy MMd GF IH ", fontsize=14)
     axs[0, 0].grid(True, linestyle='--')
 
-    # Plot the data with drug holidays in the second plot
+    # Plot the data without drug holidays in the second plot
     df_total_WMMd.plot(x='Generation', y=['xOC', 'xOB', 'xMMd', 'xMMr'],
                     color= ['tab:pink', 'tab:purple', 'tab:blue', 'tab:red'],
                                                 legend=False, ax=axs[0, 1])
@@ -927,7 +928,7 @@ def Figure_continuous_MTD_vs_AT_s_and_w_a_h(n_switches, t_steps_drug):
     axs[0, 1].set_title(r"Traditional therapy $W_{MMd}$ IH", fontsize=14)
     axs[0, 1].grid(True, linestyle='--')
 
-    # Plot the data with drug holidays in the second plot
+    # Plot the data without drug holidays in the third plot
     df_total_comb.plot(x='Generation', y=['xOC', 'xOB', 'xMMd', 'xMMr'],
                     color= ['tab:pink', 'tab:purple', 'tab:blue', 'tab:red'],
                                                     legend=False, ax=axs[0, 2])
@@ -938,7 +939,7 @@ def Figure_continuous_MTD_vs_AT_s_and_w_a_h(n_switches, t_steps_drug):
     axs[0, 2].set_title(r"Traditional therapy IH combination", fontsize=14)
     axs[0, 2].grid(True, linestyle='--')
 
-    # Plot the data with drug holidays in the third plot
+    # Plot the data with drug holidays in the fourth plot
     df_total_switch_GF.plot(x='Generation', y=['xOC', 'xOB', 'xMMd', 'xMMr'],
                     color= ['tab:pink', 'tab:purple', 'tab:blue', 'tab:red'],
                                                     legend=False, ax=axs[1, 0])
@@ -949,7 +950,7 @@ def Figure_continuous_MTD_vs_AT_s_and_w_a_h(n_switches, t_steps_drug):
     axs[1, 0].set_title(f"Adaptive therapy MMd GF IH", fontsize=14)
     axs[1, 0].grid(True, linestyle='--')
 
-    # Plot the data with drug holidays in the fourth plot
+    # Plot the data with drug holidays in the fifth plot
     df_total_switch_WMMd.plot(x='Generation', y=['xOC', 'xOB', 'xMMd', 'xMMr'],
                     color= ['tab:pink', 'tab:purple', 'tab:blue', 'tab:red'],
                                                     legend=False, ax=axs[1, 1])
@@ -960,7 +961,7 @@ def Figure_continuous_MTD_vs_AT_s_and_w_a_h(n_switches, t_steps_drug):
     axs[1, 1].set_title(r"Adaptive therapy $W_{MMd}$ IH", fontsize=14)
     axs[1, 1].grid(True, linestyle='--')
 
-    # Plot the data with drug holidays in the fourth plot
+    # Plot the data with drug holidays in the sixth plot
     df_total_switch_comb.plot(x='Generation', y=['xOC', 'xOB', 'xMMd', 'xMMr'],
                     color= ['tab:pink', 'tab:purple', 'tab:blue', 'tab:red'],
                                                     legend=False, ax=axs[1, 2])

@@ -1,11 +1,11 @@
-Author:       Eva Nieuwenhuis
-University:   Biosystems Data Analysis Group, UvA
-Student ID:   13717405
+Author:            Eva Nieuwenhuis
+University group:  Biosystems Data Analysis Group, UvA
+Student ID:        13717405
 
 MATHEMATICAL MODEL MULTIPLE MYELOMA
 The goal was to make fraction and number models that simulate the interactions
 between four cell types In the MM microenvironment: drug-sensitive MM cells (MMd),
-resistant MM cells (MMr), osteoblasts (OBs) and osteoclasts (OCs). All models
+resistant MM cells (MMr), osteoblasts (OB) and osteoclasts (OC). All models
 used collective interactions and were made in the framework of evolutionary game
 theory. The models were used to determine the effect of traditional therapy and
 adaptive therapy to study the impact of the inhibitors (IHs) on the cell type
@@ -33,30 +33,29 @@ MM_model_nr_IH_inf.py and MM_model_nr_IH_inf_mutation.py:
 
 FRACTION MODEL: MM_model_frac_IH_inf.py
 MM_model_frac_IH_inf.py contains the code with the mathematical formulas simulating
-the fraction dynamics of the four cell types MMd, MMr, OCs and OBs in the MM
-microenvironment. It contains the code to make the figures showing the effect of
-the WMMd IH, MMd GF IH and IH combination for different administration periods
-and strengths on the cell type fractions. The IHs not only affect the MMd but also
-the OC and OB.
+the fraction dynamics of the MMd, MMr, OC and OB. It contains the code to make the
+figures showing the effect of the WMMd IH, MMd GF IH and IH combination for
+different administration periods and strengths on the cell fractions. The IHs not
+only affect the MMd but also the OC and OB.
 
 NUMBER MODEL WITHOUT RESISTANCE MUTATIONS: MM_model_nr_IH_inf.py
 MM_model_nr_IH_inf.py contains the code with the mathematical formulas simulating
-the number dynamics of the four cell types MMd, MMr, OCs and OBs in the MM
-microenvironment. It contains the code to make the figures showing the effect of
-the WMMd IH, MMd GF IH and IH combination for different administration periods
-and strengths on the cell type numbers. Furthermore, it contains an optimisation
-strategy to find the best holiday duration, administration duration and IH strength
-simultaneously. The IHs not only affect the MMd but also the OC and OB.
+the number dynamics of the MMd, MMr, OC and OB. It contains the code to make the
+figures showing the effect of the WMMd IH, MMd GF IH and IH combination for
+different administration periods and strengths on the cell numbers. Furthermore,
+it contains an (weighted) optimisation strategy to find the best holiday duration,
+administration duration and IH strength simultaneously. The IHs not only affect
+the MMd but also the OC and OB.
 
 NUMBER MODEL WITH RESISTANCE MUTATIONS: MM_model_nr_IH_inf_mutation.py
 MM_model_nr_IH_inf_mutation.py contains the code with the mathematical formulas
-simulating the number dynamics of the four cell types MMd, MMr, OCs and OBs in
-the MM microenvironment. The MMd can become MMr via a mutation that happens at
-a specified rate. It contains the code to make figures showing the effect of the
-WMMd  IH, the MMd GF IH and a combination of different administration periods
-and strengths on the cell type numbers. Furthermore, it contains an optimisation
-strategy to find the best administration duration, holiday duration and IH
-strength simultaneously. The IHs not only affect the MMd but also the OC and OB.
+simulating the number dynamics of the MMd, MMr, OC and OB. The MMd can become MMr
+via a mutation that happens at a specified rate. It contains the code to make
+figures showing the effect of the WMMd  IH, the MMd GF IH and a combination of
+different administration periods and strengths on the cell numbers. Furthermore,
+it contains an (weighted) optimisation strategy to find the best administration
+duration, holiday duration and IH strength simultaneously. The IHs not only affect
+the MMd but also the OC and OB.
 
 
 TEST THE CODES
