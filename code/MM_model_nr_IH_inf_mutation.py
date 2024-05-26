@@ -46,22 +46,22 @@ def main():
     # Figure_continuous_MTD_vs_AT_realistic(90, list_t_steps_drug)
     #
     #
-    # """The optimisation"""
-    # # Optimise IH administration duration, holiday duration and strength for
-    # # MMd GF IH -> WMMd IH -> holiday
-    # minimise_MM_GF_W_h_IH()
-    #
-    # # Optimise IH administration duration, holiday duration and strength for
-    # # WMMd IH -> MMd GF IH ->  holiday
-    # minimise_MM_W_GF_h_IH()
-    #
-    # # Optimise IH administration duration, holiday duration and strengths for
-    # # MMd GF IH -> IH combination -> WMMd IH -> holiday
-    # minimise_MM_GF_comb_W_h_IH()
-    #
-    # # Optimise IH administration duration, holiday duration and strengths for
-    # # WMMd IH -> IH combination -> MMd GF IH -> holiday
-    # minimise_MM_W_comb_GF_h_IH()
+    """The optimisation"""
+    # Optimise IH administration duration, holiday duration and strength for
+    # MMd GF IH -> WMMd IH -> holiday
+    minimise_MM_GF_W_h_IH()
+
+    # Optimise IH administration duration, holiday duration and strength for
+    # WMMd IH -> MMd GF IH ->  holiday
+    minimise_MM_W_GF_h_IH()
+
+    # Optimise IH administration duration, holiday duration and strengths for
+    # MMd GF IH -> IH combination -> WMMd IH -> holiday
+    minimise_MM_GF_comb_W_h_IH()
+
+    # Optimise IH administration duration, holiday duration and strengths for
+    # WMMd IH -> IH combination -> MMd GF IH -> holiday
+    minimise_MM_W_comb_GF_h_IH()
 
     """The weighted optimisation"""
     # Optimise IH administration and holiday duration and strength for MMd GF IH
@@ -818,13 +818,10 @@ def switch_dataframe(time_IH, n_switches, t_steps_drug, t_steps_no_drug, nOC,
 
         # If x = 0 make sure the MMd is inhibited
         if x == 0:
-            # Payoff matrix
-            matrix = matrix_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_drug,
-                            growth_rates_IH, decay_rates_IH, matrix, IH_present,
-                            WMMd_inhibitor)
+                    growth_rates_IH, decay_rates_IH, matrix_GF_IH, IH_present,
+                    WMMd_inhibitor)
 
             # Change the x and time value
             x = int(1)
@@ -832,12 +829,9 @@ def switch_dataframe(time_IH, n_switches, t_steps_drug, t_steps_no_drug, nOC,
 
         # If x = 1 make sure the MMd is not inhibited
         else:
-            # Payoff matrix
-            matrix = matrix_no_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_no_drug,
-                    growth_rates, decay_rates, matrix, int(0))
+                    growth_rates, decay_rates, matrix_no_GF_IH, int(0))
 
             # Change the x and time value
             x = int(0)
@@ -918,13 +912,9 @@ def switch_dataframe_GF_W_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
         # MMd GF IH
         if x == 0:
-
-            # Payoff matrix
-            matrix = matrix_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_GF_IH,
-                            growth_rates_IH, decay_rates_IH, matrix, int(1))
+                            growth_rates_IH, decay_rates_IH, matrix_GF_IH, int(1))
 
             # Change the x and time value
             x = int(1)
@@ -932,13 +922,10 @@ def switch_dataframe_GF_W_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
         # WMMd IH
         if x == 1:
-
-            # Payoff matrix
-            matrix = matrix_no_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_WMMd_IH,
-                growth_rates_IH, decay_rates_IH, matrix, int(1), WMMd_inhibitor)
+                        growth_rates_IH, decay_rates_IH, matrix_no_GF_IH, int(1),
+                        WMMd_inhibitor)
 
             # Change the x and time value
             x = int(2)
@@ -946,13 +933,9 @@ def switch_dataframe_GF_W_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
         # No IH
         if x == 2:
-
-            # Payoff matrix
-            matrix = matrix_no_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_no_drug,
-                    growth_rates, decay_rates, matrix, int(0))
+                    growth_rates, decay_rates, matrix_no_GF_IH, int(0))
 
             # Change the x and time value
             x = int(0)
@@ -1031,13 +1014,10 @@ def switch_dataframe_W_GF_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
         # WMMd IH
         if x == 0:
-
-            # Payoff matrix
-            matrix = matrix_no_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_WMMd_IH,
-                growth_rates_IH, decay_rates_IH, matrix, int(1), WMMd_inhibitor)
+                        growth_rates_IH, decay_rates_IH, matrix_no_GF_IH, int(1),
+                        WMMd_inhibitor)
 
             # Change the x and time value
             x = int(1)
@@ -1045,13 +1025,9 @@ def switch_dataframe_W_GF_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
         # MMd GF IH
         if x == 1:
-
-            # Payoff matrix
-            matrix = matrix_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_GF_IH,
-                            growth_rates_IH, decay_rates_IH, matrix, int(1))
+                        growth_rates_IH, decay_rates_IH, matrix_GF_IH, int(1))
 
             # Change the x and time value
             x = int(2)
@@ -1059,13 +1035,9 @@ def switch_dataframe_W_GF_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
         # No IH
         if x == 2:
-
-            # Payoff matrix
-            matrix = matrix_no_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_no_drug,
-                    growth_rates, decay_rates, matrix, int(0))
+                    growth_rates, decay_rates, matrix_no_GF_IH, int(0))
 
             # Change the x and time value
             x = int(0)
@@ -1151,13 +1123,10 @@ def switch_dataframe_W_comb_GF_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
         # WMMd IH
         if x == 0:
-
-            # Payoff matrix
-            matrix = matrix_no_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_WMMd_IH,
-                growth_rates_IH, decay_rates_IH, matrix, int(1), WMMd_inhibitor)
+                        growth_rates_IH, decay_rates_IH, matrix_no_GF_IH, int(1),
+                        WMMd_inhibitor)
 
             # Change the x and time value
             x = int(1)
@@ -1165,13 +1134,10 @@ def switch_dataframe_W_comb_GF_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
         # IH combination
         if x == 1:
-
-            # Payoff matrix
-            matrix = matrix_IH_comb
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_comb,
-             growth_rates_IH, decay_rates_IH, matrix, int(2), WMMd_inhibitor_comb)
+                        growth_rates_IH, decay_rates_IH, matrix_IH_comb, int(2),
+                        WMMd_inhibitor_comb)
 
             # Change the x and time value
             x = int(2)
@@ -1179,13 +1145,9 @@ def switch_dataframe_W_comb_GF_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
         # MMd GF IH
         if x == 2:
-
-            # Payoff matrix
-            matrix = matrix_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_GF_IH,
-                            growth_rates_IH, decay_rates_IH, matrix, int(1))
+                        growth_rates_IH, decay_rates_IH, matrix_GF_IH, int(1))
 
             # Change the x and time value
             x = int(3)
@@ -1193,13 +1155,9 @@ def switch_dataframe_W_comb_GF_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
         # No IH
         if x == 3:
-
-            # Payoff matrix
-            matrix = matrix_no_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_no_drug,
-                    growth_rates, decay_rates, matrix, int(0))
+                    growth_rates, decay_rates, matrix_no_GF_IH, int(0))
 
             # Change the x and time value
             x = int(0)
@@ -1285,27 +1243,20 @@ def switch_dataframe_GF_comb_W_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
         # MMd GF IH
         if x == 0:
-
-            # Payoff matrix
-            matrix = matrix_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_GF_IH,
-                            growth_rates_IH, decay_rates_IH, matrix, int(1))
-                            
+                        growth_rates_IH, decay_rates_IH, matrix_GF_IH, int(1))
+
             # Change the x and time value
             x = int(1)
             time += t_steps_GF_IH
 
         # IH combination
         if x == 1:
-
-            # Payoff matrix
-            matrix = matrix_IH_comb
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_comb,
-             growth_rates_IH, decay_rates_IH, matrix, int(2), WMMd_inhibitor_comb)
+                        growth_rates_IH, decay_rates_IH, matrix_IH_comb, int(2),
+                        WMMd_inhibitor_comb)
 
             # Change the x and time value
             x = int(2)
@@ -1313,13 +1264,10 @@ def switch_dataframe_GF_comb_W_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
         # WMMd IH
         if x == 2:
-
-            # Payoff matrix
-            matrix = matrix_no_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_WMMd_IH,
-                growth_rates_IH, decay_rates_IH, matrix, int(1), WMMd_inhibitor)
+                        growth_rates_IH, decay_rates_IH, matrix_no_GF_IH, int(1),
+                        WMMd_inhibitor)
 
             # Change the x and time value
             x = int(3)
@@ -1327,13 +1275,9 @@ def switch_dataframe_GF_comb_W_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
         # No IH
         if x == 3:
-
-            # Payoff matrix
-            matrix = matrix_no_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_no_drug,
-                    growth_rates, decay_rates, matrix, int(0))
+                    growth_rates, decay_rates, matrix_no_GF_IH, int(0))
 
             # Change the x and time value
             x = int(0)

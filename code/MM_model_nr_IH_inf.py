@@ -38,26 +38,31 @@ def main():
     #
     # Make a figure showing the cell number dynamics by traditional therapy and
     # by adaptive therapy
-    # list_t_steps_drug = [3, 3, 3]
-    # Figure_continuous_MTD_vs_AT_realistic(90, list_t_steps_drug)
-    #
-    # # Make a 3D figure showthing the effect of different drug holiday and
-    # # administration periods
-    # Figure_3D_MM_numb_IH_add_and_holiday()
-    #
-    #
-    # # """ The optimisation """
-    # # Optimise IH administration duration, holiday duration and strength for
-    # # MMd GF IH -> WMMd IH -> holiday
-    # minimise_MM_GF_W_h_IH()
-    #
-    # # Optimise IH administration duration, holiday duration and strength for
-    # # WMMd IH -> MMd GF IH ->  holiday
-    # minimise_MM_W_GF_h_IH()
-    #
-    # # Optimise IH administration duration, holiday duration and strengths for
-    # # MMd GF IH -> IH combination -> WMMd IH -> holiday
-    # minimise_MM_GF_comb_W_h_IH()
+    list_t_steps_drug = [3, 3, 3]
+    Figure_continuous_MTD_vs_AT_realistic(90, list_t_steps_drug)
+
+    # Make a 3D figure showthing the effect of different drug holiday and
+    # administration periods
+    Figure_3D_MM_numb_IH_add_and_holiday()
+
+    # Make a figure of the number dynamics whereby there is a limit for the MMd
+    # and MMr number. The last paramter is low or high-> low: the MMr limit values
+    # are low (< 500), high: the MMr limit values are high (> 500)
+    Figure_AT_MMd_MMr_limit(500, 250)
+
+
+    # """ The optimisation """
+    # Optimise IH administration duration, holiday duration and strength for
+    # MMd GF IH -> WMMd IH -> holiday
+    minimise_MM_GF_W_h_IH()
+
+    # Optimise IH administration duration, holiday duration and strength for
+    # WMMd IH -> MMd GF IH ->  holiday
+    minimise_MM_W_GF_h_IH()
+
+    # Optimise IH administration duration, holiday duration and strengths for
+    # MMd GF IH -> IH combination -> WMMd IH -> holiday
+    minimise_MM_GF_comb_W_h_IH()
 
     # Optimise IH administration duration, holiday duration and strengths for
     # WMMd IH -> IH combination -> MMd GF IH -> holiday
@@ -403,6 +408,156 @@ def model_dynamics(y, t, growth_rates, decay_rates, matrix, WMMd_inhibitor = 0):
 
     return [nOC_change, nOB_change, nMMd_change, nMMr_change]
 
+
+def dynamics_MMd_MMr_limits(time_IH, time_end, upper_limit_MMd, upper_limit_MMr,
+            nOC, nOB, nMMd, nMMr, growth_rates, decay_rates, matrix_no_drugs,
+            matrix_drugs, WMMd_inhibitor = 0):
+    """Function that determines the number dynamics. It ensures that the MMr
+    number and MMd number do not become too high.
+
+    Parameters:
+    -----------
+    time_IH: Int
+        Number of generations before the therapy start
+    time_end: Int
+        The last generation for which the numbers have to be calculated
+    upper_limit_MMd: Int
+        The maximum number of MMd, when reached the IH administration starts
+    upper_limit_MMr: Int
+        The maximum number of MMr, when reached the IH administration stops
+    nOC: Float
+        Number of OC.
+    nOB: Float
+        Number of OB.
+    nMMd: Float
+        Number of the MMd.
+    nMMr: Float
+        Number of the MMr.
+    growth_rates: List
+        List with the growth rate values of the OC, OB, MMd and MMr.
+    decay_rates: List
+        List with the decay rate values of OC, OB, MMd and MMr.
+    matrix_no_drugs: Numpy.ndarray
+        4x4 matrix containing the interaction factors when no IHs are given.
+    matrix_drugs: Numpy.ndarray
+        4x4 matrix containing the interaction factors when IHs are given.
+    WMMd_inhibitor: Float
+        The effect of a drug on the MMd fitness.
+
+    Returns:
+    --------
+    df_numbers: Dataframe
+        The dataframe with the number per cell type over the time
+    average_a_duration: Float
+        The average administration duration
+    average_h_duration: Float
+        The average holiday duration
+    """
+    # Create a dataframe and lists
+    df_numbers = pd.DataFrame(columns = ['Generation', 'nOC', 'nOB', 'nMMd',
+                                                        'nMMr', 'total nMM'])
+    duration_holiday = []
+    duration_administration = []
+
+    # Set the start values
+    times_holiday = 0
+    times_administration = 0
+    duration = 0
+    x = int(1)
+    t = np.linspace(0, time_IH, time_IH)
+    y0 = [nOC, nOB, nMMd, nMMr]
+    parameters = (growth_rates, decay_rates, matrix_no_drugs)
+
+    # Determine the ODE solutions
+    y = odeint(model_dynamics, y0, t, args=parameters)
+    df_2 = pd.DataFrame({'Generation': t, 'nOC': y[:, 0], 'nOB': y[:, 1],
+            'nMMd': y[:, 2], 'nMMr': y[:, 3], 'total nMM': y[:, 3]+ y[:, 2]})
+
+    # Combine the dataframes
+    df_numbers = combine_dataframes(df_numbers, df_2)
+
+    # Calculate the number of generations the therapy is given
+    time_step_t = time_end - time_IH
+
+    # Loop over the generations
+    for time_step in range(time_step_t):
+
+        # Determine the start numbers
+        nOC = df_numbers['nOC'].iloc[-1]
+        nOB = df_numbers['nOB'].iloc[-1]
+        nMMd = df_numbers['nMMd'].iloc[-1]
+        nMMr = df_numbers['nMMr'].iloc[-1]
+
+        # If x = 1 add IHs and if x = 0 add no IHs
+        if x == 1:
+            # Determine the change values
+            nOC_change = dOC_dt(nOC, nOB, nMMd, nMMr, growth_rates[0],
+                                                decay_rates[0], matrix_drugs)
+            nOB_change = dOB_dt(nOC, nOB, nMMd, nMMr, growth_rates[1],
+                                                decay_rates[1], matrix_drugs)
+            nMMd_change = dMMd_dt(nOC, nOB, nMMd, nMMr, growth_rates[2],
+                                decay_rates[2], matrix_drugs, WMMd_inhibitor)
+            nMMr_change = dMMr_dt(nOC, nOB, nMMd, nMMr, growth_rates[3],
+                                                decay_rates[3], matrix_drugs)
+
+        if x == 0:
+            # Determine the change values
+            nOC_change = dOC_dt(nOC, nOB, nMMd, nMMr, growth_rates[0],
+                                                decay_rates[0], matrix_no_drugs)
+            nOB_change = dOB_dt(nOC, nOB, nMMd, nMMr, growth_rates[1],
+                                                decay_rates[1], matrix_no_drugs)
+            nMMd_change = dMMd_dt(nOC, nOB, nMMd, nMMr, growth_rates[2],
+                                                decay_rates[2], matrix_no_drugs)
+            nMMr_change = dMMr_dt(nOC, nOB, nMMd, nMMr, growth_rates[3],
+                                                decay_rates[3], matrix_no_drugs)
+
+        # Calculate the new cell numbers
+        nOC = nOC + nOC_change
+        nOB = nOB + nOB_change
+        nMMd = nMMd + nMMd_change
+        nMMr = nMMr + nMMr_change
+        nMMt = nMMd + nMMr
+
+        # If there are too many MMr stop drug administration
+        if nMMr > upper_limit_MMr and x == int(1) and duration > 5:
+
+            # Add the administration duration to the list withd durations
+            duration_administration.append(duration)
+            times_administration += 1
+            duration = 0
+
+            # Start the IH holliday
+            x = int(0)
+
+        # If there are too many MMd stop drug holiday
+        if nMMd > upper_limit_MMd and x == int(0) and duration > 5:
+
+            # Add the holiday duration to the list withd durations
+            duration_holiday.append(duration)
+            times_holiday += 1
+            duration = 0
+
+            # Start the IH administration
+            x = int(1)
+
+        # Add results to the dataframe
+        new_row_df = pd.DataFrame([{'Generation': time_IH+time_step, 'nOC': nOC,
+        'nOB': nOB, 'nMMd': nMMd, 'nMMr': nMMr, 'total nMM': nMMt}])
+        df_numbers = combine_dataframes(df_numbers, new_row_df)
+
+        # Add one to the duration
+        duration += 1
+
+    # Calculate average administration and holiday duration
+    if times_administration > 0 and times_holiday > 0:
+        average_a_duration = sum(duration_administration) / times_administration
+        average_h_duration = sum(duration_holiday) / times_holiday
+    else:
+        average_a_duration = sum(duration_administration)
+        average_h_duration = sum(duration_holiday)
+
+    return df_numbers, average_a_duration, average_h_duration
+
 def combine_dataframes(df_1, df_2):
     """ Function that combines two datafranes in on dataframe
 
@@ -617,13 +772,9 @@ def switch_dataframe(time_IH, n_switches, t_steps_drug, t_steps_no_drug, nOC,
 
         # If x = 0 make sure the MMd is inhibited
         if x == 0:
-
-            # Payoff matrix
-            matrix = matrix_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_drug,
-                    growth_rates_IH, decay_rates_IH, matrix, WMMd_inhibitor)
+                growth_rates_IH, decay_rates_IH, matrix_GF_IH, WMMd_inhibitor)
 
             # Change the x and time value
             x = int(1)
@@ -631,12 +782,9 @@ def switch_dataframe(time_IH, n_switches, t_steps_drug, t_steps_no_drug, nOC,
 
         # If x = 1 make sure the MMd is not inhibited
         else:
-            # Payoff matrix
-            matrix = matrix_no_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_no_drug,
-                    growth_rates, decay_rates, matrix)
+                    growth_rates, decay_rates, matrix_no_GF_IH)
 
             # Change the x and time value
             x = int(0)
@@ -716,13 +864,9 @@ def switch_dataframe_GF_W_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
         # MMd GF IH
         if x == 0:
-
-            # Payoff matrix
-            matrix = matrix_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_GF_IH,
-                                        growth_rates_IH, decay_rates_IH, matrix)
+                                growth_rates_IH, decay_rates_IH, matrix_GF_IH)
 
             # Change the x and time value
             x = int(1)
@@ -730,13 +874,9 @@ def switch_dataframe_GF_W_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
         # WMMd IH
         if x == 1:
-
-            # Payoff matrix
-            matrix = matrix_no_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_WMMd_IH,
-                        growth_rates_IH, decay_rates_IH, matrix, WMMd_inhibitor)
+                growth_rates_IH, decay_rates_IH, matrix_no_GF_IH, WMMd_inhibitor)
 
             # Change the x and time value
             x = int(2)
@@ -744,13 +884,9 @@ def switch_dataframe_GF_W_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
         # No IH
         if x == 2:
-
-            # Payoff matrix
-            matrix = matrix_no_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_no_drug,
-                    growth_rates, decay_rates, matrix)
+                    growth_rates, decay_rates, matrix_no_GF_IH)
 
             # Change the x and time value
             x = int(0)
@@ -830,12 +966,9 @@ def switch_dataframe_W_GF_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
         # WMMd IH
         if x == 0:
 
-            # Payoff matrix
-            matrix = matrix_no_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_WMMd_IH,
-                        growth_rates_IH, decay_rates_IH, matrix, WMMd_inhibitor)
+                growth_rates_IH, decay_rates_IH, matrix_no_GF_IH, WMMd_inhibitor)
 
             # Change the x and time value
             x = int(1)
@@ -843,13 +976,9 @@ def switch_dataframe_W_GF_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
         # MMd GF IH
         if x == 1:
-
-            # Payoff matrix
-            matrix = matrix_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_GF_IH,
-                                        growth_rates_IH, decay_rates_IH, matrix)
+                                growth_rates_IH, decay_rates_IH, matrix_GF_IH)
 
             # Change the x and time value
             x = int(2)
@@ -857,13 +986,9 @@ def switch_dataframe_W_GF_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
         # No IH
         if x == 2:
-
-            # Payoff matrix
-            matrix = matrix_no_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_no_drug,
-                    growth_rates, decay_rates, matrix)
+                    growth_rates, decay_rates, matrix_no_GF_IH)
 
             # Change the x and time value
             x = int(0)
@@ -949,13 +1074,9 @@ def switch_dataframe_W_comb_GF_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
         # WMMd IH
         if x == 0:
-
-            # Payoff matrix
-            matrix = matrix_no_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_WMMd_IH,
-                        growth_rates_IH, decay_rates_IH, matrix, WMMd_inhibitor)
+                growth_rates_IH, decay_rates_IH, matrix_no_GF_IH, WMMd_inhibitor)
 
             # Change the x and time value
             x = int(1)
@@ -963,13 +1084,10 @@ def switch_dataframe_W_comb_GF_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
         # IH combination
         if x == 1:
-
-            # Payoff matrix
-            matrix = matrix_IH_comb
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_comb,
-                growth_rates_IH, decay_rates_IH, matrix, WMMd_inhibitor_comb)
+                                growth_rates_IH, decay_rates_IH, matrix_IH_comb,
+                                WMMd_inhibitor_comb)
 
             # Change the x and time value
             x = int(2)
@@ -977,13 +1095,9 @@ def switch_dataframe_W_comb_GF_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
         # MMd GF IH
         if x == 2:
-
-            # Payoff matrix
-            matrix = matrix_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_GF_IH,
-                                        growth_rates_IH, decay_rates_IH, matrix)
+                                growth_rates_IH, decay_rates_IH, matrix_GF_IH)
 
             # Change the x and time value
             x = int(3)
@@ -991,13 +1105,9 @@ def switch_dataframe_W_comb_GF_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
         # No IH
         if x == 3:
-
-            # Payoff matrix
-            matrix = matrix_no_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_no_drug,
-                    growth_rates, decay_rates, matrix)
+                    growth_rates, decay_rates, matrix_no_GF_IH)
 
             # Change the x and time value
             x = int(0)
@@ -1083,13 +1193,9 @@ def switch_dataframe_GF_comb_W_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
         # MMd GF IH
         if x == 0:
-
-            # Payoff matrix
-            matrix = matrix_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_GF_IH,
-                                        growth_rates_IH, decay_rates_IH, matrix)
+                                growth_rates_IH, decay_rates_IH, matrix_GF_IH)
 
             # Change the x and time value
             x = int(1)
@@ -1097,13 +1203,10 @@ def switch_dataframe_GF_comb_W_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
         # IH combination
         if x == 1:
-
-            # Payoff matrix
-            matrix = matrix_IH_comb
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_comb,
-                growth_rates_IH, decay_rates_IH, matrix, WMMd_inhibitor_comb)
+                                growth_rates_IH, decay_rates_IH, matrix_IH_comb,
+                                WMMd_inhibitor_comb)
 
             # Change the x and time value
             x = int(2)
@@ -1111,13 +1214,10 @@ def switch_dataframe_GF_comb_W_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
         # WMMd IH
         if x == 2:
-
-            # Payoff matrix
-            matrix = matrix_no_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_WMMd_IH,
-                        growth_rates_IH, decay_rates_IH, matrix, WMMd_inhibitor)
+                            growth_rates_IH, decay_rates_IH, matrix_no_GF_IH,
+                            WMMd_inhibitor)
 
             # Change the x and time value
             x = int(3)
@@ -1125,13 +1225,9 @@ def switch_dataframe_GF_comb_W_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
         # No IH
         if x == 3:
-
-            # Payoff matrix
-            matrix = matrix_no_GF_IH
-
             # Extend the dataframe
             df_total_switch = make_part_df(df_total_switch, time, t_steps_no_drug,
-                    growth_rates, decay_rates, matrix)
+                    growth_rates, decay_rates, matrix_no_GF_IH)
 
             # Change the x and time value
             x = int(0)
@@ -1359,6 +1455,66 @@ def minimal_tumour_nr_t_4_situations_IH(t_steps_IH_strength, function_order,
 
     return float(average_MM_number)
 
+def dataframe_3D_plot(nOC, nOB, nMMd, nMMr, growth_rates, growth_rates_IH,
+ decay_rates, decay_rates_IH, matrix_no_GF_IH, matrix_GF_IH, WMMd_inhibitor = 0):
+    """ Function that create a dataframe with the average MM number for
+    different IH administration and holiday durations
+
+    Parameters:
+    -----------
+    nOC: Float
+        Number of OC.
+    nOB: Float
+        Number of OB.
+    nMMd: Float
+        Number of the MMd.
+    nMMr: Float
+        Number of the MMr.
+    growth_rates: List
+        List with the growth rate values of the OC, OB, MMd and MMr.
+    growth_rates_IH: List
+        List with the growth rate values of the OC, OB, MMd and MMr when a IH
+        is administered.
+    decay_rates: List
+        List with the decay rate values of OC, OB, MMd and MMr.
+    decay_rates_IH: List
+        List with the decay rate values of OC, OB, MMd and MMr when a IH is
+        administered.
+    matrix_no_GF_IH: Numpy.ndarray
+        4x4 matrix containing the interaction factors when no GF IH are
+        administered.
+    matrix_GF_IH: Numpy.ndarray
+        4x4 matrix containing the interaction factors when GF IH are administered.
+    WMMd_inhibitor: Float
+        The effect of a drug on the MMd fitness.
+
+    Returns:
+    --------
+    df_MM_frac: DataFrame
+        The dataframe with the average MM number for different IH holiday
+        and administration durations
+    """
+    # Make a dataframe
+    column_names = ['Generations no drug', 'Generations drug', 'MM number']
+    df_MM_nr = pd.DataFrame(columns=column_names)
+
+    # Loop over all the t_step values for drug administration and drug holidays
+    for t_steps_no_drug in range(2, 22):
+
+        for t_steps_drug in range(2, 22):
+            numb_tumour = minimal_tumour_numb_t_steps(t_steps_drug,
+                    t_steps_no_drug, nOC, nOB, nMMd, nMMr, growth_rates,
+                    growth_rates_IH, decay_rates, decay_rates_IH, matrix_no_GF_IH,
+                    matrix_GF_IH, WMMd_inhibitor)
+
+            # Add results to the dataframe
+            new_row_df = pd.DataFrame([{'Generations no drug': \
+                    int(t_steps_no_drug), 'Generations drug': int(t_steps_drug),
+                                             'MM number': float(numb_tumour)}])
+            df_MM_nr = combine_dataframes(df_MM_nr, new_row_df)
+
+    return(df_MM_nr)
+
 def continuous_add_IH_df(time_IH, end_generation, nOC, nOB, nMMd, nMMr,
                     growth_rates, growth_rates_IH, decay_rates, decay_rates_IH,
                     matrix_no_GF_IH, matrix_GF_IH, WMMd_inhibitor = 0):
@@ -1547,6 +1703,26 @@ def minimal_tumour_numb_t_steps(t_steps_drug, t_steps_no_drug, nOC, nOB, nMMd,
 
     return float(average_MM_number)
 
+def avarage_MMr_MMd_nr(dataframe, time, therapy):
+    """ Function that calculates the average MMd and MMr number
+
+    Parameters:
+    -----------
+    dataframe: Dataframe
+        The dataframe containing the MMd and MMr numbers over time
+    time: Int
+        The time over which the average MMd and MMr number should be calculated
+    therapy: String
+        The kind of therapy used
+    """
+    # Calculates the average MMd and MMr number
+    last_MMd_numbers = dataframe['nMMd'].tail(int(time))
+    average_MMd_number = round(last_MMd_numbers.sum() / time, 2)
+    last_MMr_numbers = dataframe['nMMr'].tail(int(time))
+    average_MMr_number = round(last_MMr_numbers.sum() / time, 2)
+    print(f'{therapy}: nMMd =',average_MMd_number,
+                                        'and nMMr =', average_MMr_number)
+
 """ Figure to determine the difference between traditional and adaptive therapy
 The interaction matrix is changed to make it more realistic"""
 def Figure_continuous_MTD_vs_AT_realistic(n_switches, t_steps_drug):
@@ -1624,26 +1800,9 @@ def Figure_continuous_MTD_vs_AT_realistic(n_switches, t_steps_drug):
                     matrix_no_GF_IH, matrix_IH_comb, WMMd_inhibitor_comb)
 
     # Print the equilibrium MMd and MMr values caused by the adaptive therapy
-    last_MMd_numbers_GF = df_total_switch_GF['nMMd'].tail(int(6))
-    average_MMd_number_GF = round(last_MMd_numbers_GF.sum() / 6, 2)
-    last_MMr_numbers_GF = df_total_switch_GF['nMMr'].tail(int(6))
-    average_MMr_number_GF = round(last_MMr_numbers_GF.sum() / 6, 2)
-    print('Adaptive therapy MMd GF IH: nMMd =',average_MMd_number_GF,
-                                        'and nMMr =', average_MMr_number_GF)
-
-    last_MMd_numbers_WMMd = df_total_switch_WMMd['nMMd'].tail(int(6))
-    average_MMd_number_WMMd = round(last_MMd_numbers_WMMd.sum() / 6, 2)
-    last_MMr_numbers_WMMd = df_total_switch_WMMd['nMMr'].tail(int(6))
-    average_MMr_number_WMMd = round(last_MMr_numbers_WMMd.sum() / 6, 2)
-    print('Adaptive therapy WMMd IH: nMMd =',average_MMd_number_WMMd,
-                                        'and nMMr =', average_MMr_number_WMMd)
-
-    last_MMd_numbers_comb = df_total_switch_comb['nMMd'].tail(int(6))
-    average_MMd_number_comb = round(last_MMd_numbers_comb.sum() / 6, 2)
-    last_MMr_numbers_comb = df_total_switch_comb['nMMr'].tail(int(6))
-    average_MMr_number_comb = round(last_MMr_numbers_comb.sum() / 6, 2)
-    print('Adaptive therapy IH combination: nMMd =',average_MMd_number_comb,
-                                        'and nMMr =', average_MMr_number_comb)
+    avarage_MMr_MMd_nr(df_total_switch_GF, 6, "Adaptive therapy MMd GF IH")
+    avarage_MMr_MMd_nr(df_total_switch_WMMd, 6, "Adaptive therapy WMMd IH")
+    avarage_MMr_MMd_nr(df_total_switch_comb, 6, "Adaptive therapy IH combination")
 
     # Save the data
     save_dataframe(df_total_switch_GF, 'df_cell_nr_IH_inf_switch_GF_IH_r.csv',
@@ -1739,6 +1898,138 @@ def Figure_continuous_MTD_vs_AT_realistic(n_switches, t_steps_drug):
                                  r'..\visualisation\results_model_nr_IH_inf')
     plt.show()
 
+""" Figure to determine the difference between traditional and adaptive therapy
+The AT administration and holiday durations depend on the MMd and MMr number"""
+def Figure_AT_MMd_MMr_limit(upper_limit_MMd, upper_limit_MMr):
+    """ Function that makes a figure with 3 subplots showing the cell number
+    dynamics adaptive therapy. The IH administration starts when MMd because
+    too high and stops when the MMr becomes too high. It prints the average
+    adinistration and holiday duration
+
+    Parameters:
+    -----------
+    upper_limit_MMd: Int
+        The maximum number of MMd, when reached the IH administration starts
+    upper_limit_MMr: Int
+        The maximum number of MMr, when reached the IH administration stops
+    limit: String
+        low -> The MMr limit values are low (< 500), high-> the MMd limit values
+        are high (> 500). Ensures that figures are saved under different names
+    """
+    # Set start values
+    nOC = 90
+    nOB = 160
+    nMMd = 100
+    nMMr = 10
+    growth_rates = [0.8, 1.2, 0.3, 0.3]
+    decay_rates = [0.9, 0.08, 0.2, 0.1]
+    growth_rates_IH = [0.7, 1.3, 0.3, 0.3]
+    decay_rates_IH = [1.0, 0.08, 0.2, 0.1]
+
+    # Payoff matrix when no drugs are present
+    matrix_no_GF_IH = np.array([
+        [0.0, 0.4, 0.51, 0.51],
+        [0.3, 0.0, -0.3, -0.3],
+        [0.55, 0.0, 0.5, 0.0],
+        [0.54, 0.0, -0.5, 0.7]])
+
+    # Payoff matrix when only GF inhibitor drugs are present
+    matrix_GF_IH = np.array([
+        [0.0, 0.4, 0.51, 0.51],
+        [0.3, 0.0, -0.3, -0.3],
+        [0.08, 0.0, 0.5, 0.0],
+        [0.54, 0.0, -0.5, 0.7]])
+
+    # Payoff matrix when both inhibitor drugs are present
+    matrix_IH_comb = np.array([
+        [0.0, 0.4, 0.51, 0.51],
+        [0.3, 0.0, -0.3, -0.3],
+        [0.25, 0.0, 0.5, 0.0],
+        [0.54, 0.0, -0.7, 0.7]])
+
+    # WMMd inhibitor effect when both inhibitor drugs are present
+    WMMd_inhibitor_comb = 0.24
+
+    # WMMd inhibitor effect when only WMMd IH is present
+    WMMd_inhibitor = 0.55
+
+    # Make dataframe for the different drug hollyday duration values
+    df_switch_GF, a_dur_GF, h_dur_GF = dynamics_MMd_MMr_limits(30, 500,
+        upper_limit_MMd,  upper_limit_MMr, nOC, nOB, nMMd, nMMr, growth_rates,
+        decay_rates, matrix_no_GF_IH, matrix_GF_IH)
+    df_switch_WMMd, a_dur_W, h_dur_W = dynamics_MMd_MMr_limits(30, 500,
+        upper_limit_MMd, upper_limit_MMr, nOC, nOB, nMMd, nMMr, growth_rates,
+        decay_rates, matrix_no_GF_IH, matrix_no_GF_IH, WMMd_inhibitor)
+    df_switch_comb, a_dur_comb, h_dur_comb = dynamics_MMd_MMr_limits(30, 500,
+        upper_limit_MMd, upper_limit_MMr, nOC, nOB, nMMd, nMMr, growth_rates,
+        decay_rates, matrix_no_GF_IH, matrix_IH_comb, WMMd_inhibitor_comb)
+
+    # Print average holiday and administration duration
+    print(f"""The average MMd GF IH administration duration is
+    {round(a_dur_GF, 0)} generations and the average MMd GF IH holiday duration
+    is {round(h_dur_GF, 0)} generations""")
+    print(f"""The average WMMd IH administration duration is {round(a_dur_W, 0)}
+    generations and the average WMMd IH holiday duration is {round(h_dur_W, 0)}
+    generations""")
+    print(f"""The average IH combination administration duration is
+    {round(a_dur_comb, 0)} generations and the average IH combination holiday
+    duration is {round(h_dur_comb, 0)} generations""")
+
+    # Save the data
+    save_dataframe(df_switch_GF, 'df_cell_nr_GF_IH_AT_MM_limit.csv',
+                                            r'..\data\data_model_nr_IH_inf')
+    save_dataframe(df_switch_WMMd, 'df_cell_nr_W_IH_AT_MM_limit.csv',
+                                            r'..\data\data_model_nr_IH_inf')
+    save_dataframe(df_switch_comb, 'df_cell_nr_IH_comb_AT_MM_limit.csv',
+                                            r'..\data\data_model_nr_IH_inf')
+
+    fig, axs = plt.subplots(1, 3, figsize=(18, 6))
+
+    # Plot the data of the AT based on the MMd and MMr number (MMd GF IH)
+    df_switch_GF.plot(x='Generation', y=['nOC', 'nOB', 'nMMd', 'nMMr'],
+                    color= ['tab:pink', 'tab:purple', 'tab:blue', 'tab:red'],
+                                                    legend=False, ax=axs[0])
+    axs[0].axvspan(xmin = 30, xmax = 402, color = 'lightgray', alpha = 0.45)
+    axs[0].set_xlim(1, 402)
+    axs[0].set_xlabel('Generations', fontsize=12)
+    axs[0].set_ylabel(r'Cell number ($n_{i}$)', fontsize=12)
+    axs[0].set_title(f"Traditional therapy MMd GF IH ", fontsize=14)
+    axs[0].grid(True, linestyle='--')
+
+    # Plot the data of the AT based on the MMd and MMr number (WMMd IH)
+    df_switch_WMMd.plot(x='Generation', y=['nOC', 'nOB', 'nMMd', 'nMMr'],
+                    color= ['tab:pink', 'tab:purple', 'tab:blue', 'tab:red'],
+                                                    legend=False, ax=axs[1])
+    axs[1].axvspan(xmin = 30, xmax = 402, color = 'lightgray', alpha = 0.45)
+    axs[1].set_xlim(1, 402)
+    axs[1].set_xlabel('Generations', fontsize=12)
+    axs[1].set_ylabel(' ')
+    axs[1].set_title(r"Traditional therapy $W_{MMd}$ IH", fontsize=14)
+    axs[1].grid(True, linestyle='--')
+
+    # Plot the data of the AT based on the MMd and MMr number (IH combination)
+    df_switch_comb.plot(x='Generation', y=['nOC', 'nOB', 'nMMd', 'nMMr'],
+                    color= ['tab:pink', 'tab:purple', 'tab:blue', 'tab:red'],
+                                                    legend=False, ax=axs[2])
+    axs[2].axvspan(xmin = 30, xmax = 402, color = 'lightgray', alpha = 0.45)
+    axs[2].set_xlim(1, 402)
+    axs[2].set_xlabel('Generations', fontsize=12)
+    axs[2].set_ylabel(' ')
+    axs[2].set_title(r"Traditional therapy IH combination", fontsize=14)
+    axs[2].grid(True, linestyle='--')
+
+    # Create a single legend outside of all plots
+    legend_labels = ['OC number', 'OB number', 'MMd number', 'MMr number',
+                                                                    'Therapy']
+    fig.legend(labels = legend_labels, loc='upper center', ncol=5,
+                                                            fontsize='x-large')
+
+    # Save the data
+    save_Figure(plt, 'line_plot_cell_nr_AT_limit_MMd_MMr',
+                                 r'..\visualisation\results_model_nr_IH_inf')
+
+    plt.show()
+
 """ 3D plot showing the best IH holiday and administration periods"""
 def Figure_3D_MM_numb_IH_add_and_holiday():
     """ Figure that makes three 3D plot that shows the average number of MM for
@@ -1783,23 +2074,10 @@ def Figure_3D_MM_numb_IH_add_and_holiday():
     # WMMd inhibitor effect when only WMMd IH is present
     WMMd_inhibitor = 0.42
 
-    # Make a dataframe
-    column_names = ['Generations no drug', 'Generations drug', 'MM number']
-    df_holiday_GF_IH = pd.DataFrame(columns=column_names)
-
-    # Loop over all the t_step values for drug administration and drug holidays
-    for t_steps_no_drug in range(2, 22):
-
-        for t_steps_drug in range(2, 22):
-            numb_tumour = minimal_tumour_numb_t_steps(t_steps_drug,
-            t_steps_no_drug, nOC, nOB, nMMd, nMMr, growth_rates, growth_rates_IH,
-            decay_rates, decay_rates_IH, matrix_no_GF_IH, matrix_GF_IH)
-
-            # Add results to the dataframe
-            new_row_df = pd.DataFrame([{'Generations no drug': \
-                    int(t_steps_no_drug), 'Generations drug': int(t_steps_drug),
-                                             'MM number': float(numb_tumour)}])
-            df_holiday_GF_IH = combine_dataframes(df_holiday_GF_IH, new_row_df)
+    # Create a dataframe
+    df_holiday_GF_IH = dataframe_3D_plot(nOC, nOB, nMMd, nMMr, growth_rates,
+            growth_rates_IH, decay_rates, decay_rates_IH, matrix_no_GF_IH,
+            matrix_GF_IH)
 
     # Save the data
     save_dataframe(df_holiday_GF_IH, 'df_cell_nr_IH_inf_best_MMd_GF_IH_holiday.csv',
@@ -1809,24 +2087,10 @@ def Figure_3D_MM_numb_IH_add_and_holiday():
     X_GF_IH, Y_GF_IH, Z_GF_IH = x_y_z_axis_values_3d_plot(df_holiday_GF_IH,
                                                                         "GF IH")
 
-    # Make a dataframe
-    column_names = ['Generations no drug', 'Generations drug', 'MM number']
-    df_holiday_W_IH = pd.DataFrame(columns=column_names)
-
-    # Loop over al the t_step values for drug dministration and drug holidays
-    for t_steps_no_drug in range(2, 22):
-
-        for t_steps_drug in range(2, 22):
-            numb_tumour = minimal_tumour_numb_t_steps(t_steps_drug,
-                            t_steps_no_drug, nOC, nOB, nMMd, nMMr, growth_rates,
-                            growth_rates_IH, decay_rates, decay_rates_IH,
-                            matrix_no_GF_IH, matrix_no_GF_IH, WMMd_inhibitor)
-
-            # Add results to the dataframe
-            new_row_df = pd.DataFrame([{'Generations no drug': \
-                    int(t_steps_no_drug), 'Generations drug': int(t_steps_drug),
-                                             'MM number': float(numb_tumour)}])
-            df_holiday_W_IH = combine_dataframes(df_holiday_W_IH, new_row_df)
+    # Create a dataframe
+    df_holiday_W_IH = dataframe_3D_plot(nOC, nOB, nMMd, nMMr, growth_rates,
+                growth_rates_IH, decay_rates, decay_rates_IH, matrix_no_GF_IH,
+                matrix_no_GF_IH, WMMd_inhibitor)
 
     # Save the data
     save_dataframe(df_holiday_W_IH, 'df_cell_nr_IH_inf_best_WMMd_IH_holiday.csv',
@@ -1835,27 +2099,13 @@ def Figure_3D_MM_numb_IH_add_and_holiday():
     # Determine the axis values
     X_W_IH, Y_W_IH, Z_W_IH = x_y_z_axis_values_3d_plot(df_holiday_W_IH, 'W IH')
 
-    # Make a dataframe
-    column_names = ['Generations no drug', 'Generations drug', 'MM number']
-    df_holiday_comb = pd.DataFrame(columns=column_names)
-
-    # Loop over al the t_step values for drug dministration and drug holidays
-    for t_steps_no_drug in range(2, 22):
-
-        for t_steps_drug in range(2, 22):
-            numb_tumour = minimal_tumour_numb_t_steps(t_steps_drug,
-                        t_steps_no_drug, nOC, nOB, nMMd, nMMr, growth_rates,
-                        growth_rates_IH, decay_rates, decay_rates_IH,
-                        matrix_no_GF_IH, matrix_IH_comb, WMMd_inhibitor_comb)
-
-            # Add results to the dataframe
-            new_row_df = pd.DataFrame([{'Generations no drug': \
-                    int(t_steps_no_drug), 'Generations drug': int(t_steps_drug),
-                                            'MM number': float(numb_tumour)}])
-            df_holiday_comb = combine_dataframes(df_holiday_comb, new_row_df)
+    # Create a dataframe
+    df_holiday_comb = dataframe_3D_plot(nOC, nOB, nMMd, nMMr, growth_rates,
+            growth_rates_IH, decay_rates, decay_rates_IH, matrix_no_GF_IH,
+            matrix_IH_comb, WMMd_inhibitor_comb)
 
     # Save the data
-    save_dataframe(df_holiday_comb, 'df_cell_nr_IH_inf_best_comb_IH_holiday.csv',
+    save_dataframe(df_holiday_comb, 'df_cell_nr_IH_inf_best_MMd_IH_holiday.csv',
                                              r'..\data\data_model_nr_IH_inf')
 
     # Determine the axis values
