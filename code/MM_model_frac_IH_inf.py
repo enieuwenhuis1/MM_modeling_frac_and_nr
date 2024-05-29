@@ -37,10 +37,10 @@ def main():
     # Do doc tests
     doctest.testmod()
 
-    # # Make a figure showing the cell fraction dynamics by traditional therapy and
-    # # by adaptive therapy
-    # list_t_steps_drug = [5, 5, 5]
-    # Figure_continuous_MTD_vs_AT_s_and_w_a_h(18, list_t_steps_drug)
+    # Make a figure showing the cell fraction dynamics by traditional therapy and
+    # by adaptive therapy
+    list_t_steps_drug = [5, 5, 5]
+    Figure_continuous_MTD_vs_AT_realistic(18, list_t_steps_drug)
 
     # Make a 3D figure showthing the effect of different drug holiday and
     # administration periods
@@ -338,10 +338,10 @@ def frac_to_fitness_values(dataframe_fractions, N, cOC, cOB, cMMd, cMMr, matrix,
         Cost parameter OC.
     cOB: Float
         Cost parameter OB.
-    cMMr: Float
-        Cost parameter MMr.
     cMMd: Float
         Cost parameter MMd.
+    cMMr: Float
+        Cost parameter MMr.
     matrix: Numpy.ndarray
         4x4 matrix containing the interaction factors.
     WMMd_inhibitor: Float
@@ -477,20 +477,20 @@ def switch_dataframe(time_start_drugs, n_switches, t_steps_drug, t_steps_no_drug
         Fraction of OC.
     xOB: Float
         Fraction of OB.
-    xMMr: Float
-        Fraction of the MMr.
     xMMd: Float
         Fraction of the MMd.
+    xMMr: Float
+        Fraction of the MMr.
     N: Int
         Fraction of cells in the difussion range.
     cOC: Float
         Cost parameter OC.
     cOB: Float
         Cost parameter OB.
-    cMMr: Float
-        Cost parameter MMr.
     cMMd: Float
         Cost parameter MMd.
+    cMMr: Float
+        Cost parameter MMr.
     cOC_IH: Float
         Cost parameter OC when a IH is administered.
     cOB_IH: Float
@@ -613,10 +613,10 @@ def continuous_add_IH_df(time_start_drugs, end_generation, xOC, xOB, xMMd, xMMr,
         Cost parameter OC.
     cOB: float
         Cost parameter OB.
-    cMMr: Float
-        Cost parameter MMr.
     cMMd: Float
         Cost parameter MMd.
+    cMMr: Float
+        Cost parameter MMr.
     cOC_IH: Float
         Cost parameter OC when a IH is administered.
     cOB_IH: Float
@@ -679,20 +679,20 @@ def minimal_tumour_frac_t_steps(t_steps_drug, t_steps_no_drug, xOC, xOB, xMMd,
         Fraction of OC.
     xOB: Float
         Fraction of OB.
-    xMMr: Float
-        Fraction of the MMr.
     xMMd: Float
         Fraction of the MMd.
+    xMMr: Float
+        Fraction of the MMr.
     N: Int
         fraction of cells in the difussion range.
     cOC: Float
         Cost parameter OC.
     cOB: float
         Cost parameter OB.
-    cMMr: Float
-        Cost parameter MMr.
     cMMd: Float
         Cost parameter MMd.
+    cMMr: Float
+        Cost parameter MMr.
     cOC_IH: Float
         Cost parameter OC when a IH is administered.
     cOB_IH: Float
@@ -752,20 +752,20 @@ def dataframe_3D_plot(xOC, xOB, xMMd, xMMr, N, cOC, cOB, cMMd, cMMr, cOC_IH,
         Fraction of OC.
     xOB: Float
         Fraction of OB.
-    xMMr: Float
-        Fraction of the MMr.
     xMMd: Float
         Fraction of the MMd.
+    xMMr: Float
+        Fraction of the MMr.
     N: Int
         fraction of cells in the difussion range.
     cOC: Float
         Cost parameter OC.
     cOB: float
         Cost parameter OB.
-    cMMr: Float
-        Cost parameter MMr.
     cMMd: Float
         Cost parameter MMd.
+    cMMr: Float
+        Cost parameter MMr.
     cOC_IH: Float
         Cost parameter OC when a IH is administered.
     cOB_IH: Float
@@ -811,7 +811,7 @@ def x_y_z_axis_values_3d_plot(dataframe, name):
 
     Parameters:
     -----------
-    Dataframe: dataFrame
+    dataframe: DataFrame
         The dataframe with the generated data
     name: String
         The name of the administered IH(s)
@@ -864,7 +864,7 @@ def avarage_MMr_MMd_frac(dataframe, time, therapy):
 
     Parameters:
     -----------
-    dataframe: Dataframe
+    dataframe: DataFrame
         The dataframe containing the MMd and MMr fractions over time
     time: Int
         The time over which the average MMd and MMr fraction should be calculated
@@ -880,7 +880,7 @@ def avarage_MMr_MMd_frac(dataframe, time, therapy):
                                         'and xMMr =', average_MMr_fraction)
 
 """ Figure to determine the difference between traditional and adaptive therapy"""
-def Figure_continuous_MTD_vs_AT_s_and_w_a_h(n_switches, t_steps_drug):
+def Figure_continuous_MTD_vs_AT_realistic(n_switches, t_steps_drug):
     """ Function that makes a figure with 6 subplots showing the cell type
     fraction dynamics by traditional therapy (continuous MTD) and adaptive
     therapy.The holiday and administration periods are 5 generations. It also
@@ -969,17 +969,17 @@ def Figure_continuous_MTD_vs_AT_s_and_w_a_h(n_switches, t_steps_drug):
 
 
     # Save the data
-    save_dataframe(df_total_switch_GF,'df_cell_frac_IH_switch_GF_IH_s_&_w_a_h.csv',
+    save_dataframe(df_total_switch_GF,'df_cell_frac_IH_switch_GF_IH_r.csv',
                                         r'..\data\data_model_frac_IH_inf')
-    save_dataframe(df_total_switch_WMMd,'df_cell_frac_IH_switch_WMMd_IH_s_&_w_a_h.csv',
+    save_dataframe(df_total_switch_WMMd,'df_cell_frac_IH_switch_WMMd_IH_r.csv',
                                         r'..\data\data_model_frac_IH_inf')
-    save_dataframe(df_total_switch_comb,'df_cell_frac_IH_switch_comb_IH_s_&_w_a_h.csv',
+    save_dataframe(df_total_switch_comb,'df_cell_frac_IH_switch_comb_IH_r.csv',
                                         r'..\data\data_model_frac_IH_inf')
-    save_dataframe(df_total_GF, 'df_cell_frac_IH_continuous_GF_IH_s_&_w_a_h.csv',
+    save_dataframe(df_total_GF, 'df_cell_frac_IH_continuous_GF_IH_r.csv',
                                          r'..\data\data_model_frac_IH_inf')
-    save_dataframe(df_total_WMMd,'df_cell_frac_IH_continuous_WMMd_IH_s_&_w_a_h.csv',
+    save_dataframe(df_total_WMMd,'df_cell_frac_IH_continuous_WMMd_IH_r.csv',
                                          r'..\data\data_model_frac_IH_inf')
-    save_dataframe(df_total_comb,'df_cell_frac_IH_continuous_comb_IH_s_&_w_a_h.csv',
+    save_dataframe(df_total_comb,'df_cell_frac_IH_continuous_comb_IH_r.csv',
                                         r'..\data\data_model_frac_IH_inf')
 
     # Create a Figure
@@ -1056,7 +1056,7 @@ def Figure_continuous_MTD_vs_AT_s_and_w_a_h(n_switches, t_steps_drug):
                                                     'MMr fraction', 'Therapy']
     fig.legend(labels = legend_labels, loc='upper center', ncol=5,
                                                             fontsize='x-large')
-    save_Figure(plt, 'line_plot_cell_frac_IH_AT_MTD_s_&_w_a_h',
+    save_Figure(plt, 'line_plot_cell_frac_IH_AT_MTD_r',
                                  r'..\visualisation\results_model_frac_IH_inf')
     plt.show()
 

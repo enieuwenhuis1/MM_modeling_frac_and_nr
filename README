@@ -32,35 +32,35 @@ MM_model_nr_IH_inf.py and MM_model_nr_IH_inf_mutation.py:
 
 
 FRACTION MODEL: MM_model_frac_IH_inf.py
-MM_model_frac_IH_inf.py contains the code with the mathematical formulas simulating
-the fraction dynamics of the MMd, MMr, OC and OB. It contains the code to make the
-figures showing the effect of the WMMd IH, MMd GF IH and IH combination for
-different administration periods and strengths on the cell fractions. The IHs not
-only affect the MMd but also the OC and OB.
+MM_model_frac_IH_inf.py contains the code with the mathematical formulas
+simulating the fraction dynamics of the MMd, MMr, OC and OB. It contains code to
+make figures showing the effect of the WMMd IH, MMd GF IH and IH combination on
+the cell fractions for different administration periods and strengths. The IHs
+not only affect the MMd but also the OC and OB.
 
 NUMBER MODEL WITHOUT RESISTANCE MUTATIONS: MM_model_nr_IH_inf.py
 MM_model_nr_IH_inf.py contains the code with the mathematical formulas simulating
-the number dynamics of the MMd, MMr, OC and OB. It contains the code to make the
-figures showing the effect of the WMMd IH, MMd GF IH and IH combination for
-different administration periods and strengths on the cell numbers. Furthermore,
-it contains an (weighted) optimisation strategy to find the best holiday duration,
-administration duration and IH strength simultaneously. The IHs not only affect
-the MMd but also the OC and OB.
+the number dynamics of the MMd, MMr, OC and OB. It contains code to make figures
+showing the effect of the WMMd IH, MMd GF IH and IH combination on the cell numbers
+for different administration periods and strengths. Furthermore, it contains a
+(weighted) optimisation to find the best holiday duration, administration duration
+and IH strength simultaneously. The IHs not only affect the MMd but also the OC
+and OB.
 
 NUMBER MODEL WITH RESISTANCE MUTATIONS: MM_model_nr_IH_inf_mutation.py
 MM_model_nr_IH_inf_mutation.py contains the code with the mathematical formulas
 simulating the number dynamics of the MMd, MMr, OC and OB. The MMd can become MMr
-via a mutation that happens at a specified rate. It contains the code to make
-figures showing the effect of the WMMd  IH, the MMd GF IH and a combination of
-different administration periods and strengths on the cell numbers. Furthermore,
-it contains an (weighted) optimisation strategy to find the best administration
-duration, holiday duration and IH strength simultaneously. The IHs not only affect
-the MMd but also the OC and OB.
+via a mutation that happens at a specified rate. It contains code to make figures
+showing the effect of the WMMd  IH, the MMd GF IH and a combination on the cell
+numbers for different administration periods and strengths. Furthermore, it
+contains a (weighted) optimisation to find the best administration duration,
+holiday duration and IH strength simultaneously. The IHs not only affect the MMd
+but also the OC and OB.
 
 
 TEST THE CODES
 To test some of the functions in every code file, doc tests are added to the code.
-These are automatically run when the specific function in the code file is run.
+These are automatically run when the specific function is run.
 
 
 THE DATA

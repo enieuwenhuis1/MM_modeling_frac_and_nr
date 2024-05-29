@@ -39,13 +39,13 @@ import doctest
 def main():
     # Do doc tests
     doctest.testmod()
-    #
-    # # Make a figure showing the cell number dynamics by traditional therapy and
-    # # by adaptive therapy
-    # list_t_steps_drug = [3,3,3]
-    # Figure_continuous_MTD_vs_AT_realistic(90, list_t_steps_drug)
-    #
-    #
+    
+    # Make a figure showing the cell number dynamics by traditional therapy and
+    # by adaptive therapy
+    list_t_steps_drug = [3,3,3]
+    Figure_continuous_MTD_vs_AT_realistic(90, list_t_steps_drug)
+
+
     """The optimisation"""
     # Optimise IH administration duration, holiday duration and strength for
     # MMd GF IH -> WMMd IH -> holiday
@@ -363,7 +363,8 @@ def dOB_dt_no_MMr(nOC, nOB, nMMd, nMMr, gr_OB, dr_OB, matrix):
     change_nOB = (gr_OB * nOC**e * nOB**f * nMMd**g) - (dr_OB * nOB)
     return change_nOB
 
-def dMMd_dt_no_MMr(nOC, nOB, nMMd, nMMr, gr_MMd, dr_MMd, matrix, WMMd_inhibitor = 0):
+def dMMd_dt_no_MMr(nOC, nOB, nMMd, nMMr, gr_MMd, dr_MMd, matrix,
+                                                        WMMd_inhibitor = 0):
     """
     Function that calculates the change in the number of a drug-senstive MM cells
     when no MMr are present.
@@ -1003,8 +1004,8 @@ def switch_dataframe_W_GF_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
     # Determine the ODE solutions
     y = odeint(model_dynamics, y0, t, args=parameters)
-    df_total_switch = pd.DataFrame({'Generation': t, 'nOC': y[:, 0], 'nOB': y[:, 1],
-                'nMMd': y[:, 2], 'nMMr': y[:, 3], 'total nMM': y[:, 3]+ y[:, 2]})
+    df_total_switch = pd.DataFrame({'Generation': t, 'nOC': y[:, 0], 'nOB': \
+      y[:, 1], 'nMMd': y[:, 2], 'nMMr': y[:, 3], 'total nMM': y[:, 3]+ y[:, 2]})
 
     # Increase the time
     time += t_steps
@@ -1973,7 +1974,7 @@ def minimise_MM_GF_W_h_IH_w(relative_weight_MMr):
 
     # Optimise the administration and holiday durations and the IH strengths
     # t_step_IH_strength = [GF IH t, W IH t, h t, GF IH s, W IH s]
-    t_step_IH_strength = [2.138, 2.858, 2.438, 0.333, 0.389]
+    t_step_IH_strength = [2.950, 2.376, 2.874, 0.312, 0.462]
     result = minimize(minimal_tumour_nr_t_3_situations_IH, t_step_IH_strength,
             args=(switch_dataframe_GF_W_h, relative_weight_MMr, nOC, nOB, nMMd,
             nMMr, growth_rates, growth_rates_IH, decay_rates, decay_rates_IH,
@@ -2056,8 +2057,8 @@ def minimise_MM_W_GF_h_IH_w(relative_weight_MMr):
                 r'..\data\data_model_nr_IH_inf_mutation\optimise_W_GF_h_IH_w.csv')
 
 
-"""Optimise IH administration duration and holiday duration for WMMd IH->
-IH combination -> MMd GF IH -> holiday where the weight of the MMr relative to the
+"""Optimise IH administration duration and holiday duration for WMMd IH ->IH
+combination -> MMd GF IH -> holiday where the weight of the MMr relative to the
 MMd can be specified"""
 def minimise_MM_W_comb_GF_h_IH_w(relative_weight_MMr):
     """Function that determines the best IH administration durations and holiday
@@ -2131,8 +2132,8 @@ def minimise_MM_W_comb_GF_h_IH_w(relative_weight_MMr):
         r'..\data\data_model_nr_IH_inf_mutation\optimise_W_comb_GF_h_IH_w.csv')
 
 
-"""Optimise IH administration duration and holiday duration for MMd GF IH->
-IH combination -> WMMd IH -> holiday where the weight of the MMr relative to the
+"""Optimise IH administration duration and holiday duration for MMd GF IH-> IH
+combination -> WMMd IH -> holiday where the weight of the MMr relative to the
 MMd can be specified"""
 def minimise_MM_GF_comb_W_h_IH_w(relative_weight_MMr):
     """Function that determines the best IH administration durations and holiday
