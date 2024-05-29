@@ -48,48 +48,48 @@ def main():
     list_t_steps_drug = [3,3,3]
     Figure_continuous_MTD_vs_AT_realistic(90, list_t_steps_drug)
 
-    #
-    # """The optimisation"""
-    # # Optimise IH administration duration, holiday duration and strength for
-    # # MMd GF IH -> WMMd IH -> holiday
-    # minimise_MM_GF_W_h_IH()
-    #
-    # # Optimise IH administration duration, holiday duration and strength for
-    # # WMMd IH -> MMd GF IH ->  holiday
-    # minimise_MM_W_GF_h_IH()
-    #
-    # # Optimise IH administration duration, holiday duration and strengths for
-    # # MMd GF IH -> IH combination -> WMMd IH -> holiday
-    # minimise_MM_GF_comb_W_h_IH()
-    #
-    # # Optimise IH administration duration, holiday duration and strengths for
-    # # WMMd IH -> IH combination -> MMd GF IH -> holiday
-    # minimise_MM_W_comb_GF_h_IH()
-    #
-    # """The weighted optimisation"""
-    # # Optimise IH administration and holiday duration and strength for MMd GF IH
-    # # -> WMMd IH -> holiday where the weight of the MMr relative to the MMd can
-    # # be specified
-    # relative_weight_MMr = 1.2
-    # minimise_MM_GF_W_h_IH_w(relative_weight_MMr)
-    #
-    # # Optimise IH administration and holiday duration and strength for WMMd IH ->
-    # # MMd GF IH -> holiday where the weight of the MMr relative to the MMd can be
-    # # specified
-    # relative_weight_MMr = 1.2
-    # minimise_MM_W_GF_h_IH_w(relative_weight_MMr)
-    #
-    # # Optimise IH administration and holiday duration and strengths for MMd GF IH
-    # # -> IH combination -> WMMd IH -> holiday where the weight of the MMr relative
-    # # to the MMd can be specified
-    # relative_weight_MMr = 1.2
-    # minimise_MM_GF_comb_W_h_IH_w(relative_weight_MMr)
-    #
-    # # Optimise IH administration and holiday duration and strengths for WMMd IH
-    # # -> IH combination -> MMd GF IH -> holiday where the weight of the MMr
-    # # relative to the MMd can be specified
-    # relative_weight_MMr = 1.2
-    # minimise_MM_W_comb_GF_h_IH_w(relative_weight_MMr)
+
+    """The optimisation"""
+    # Optimise IH administration duration, holiday duration and strength for
+    # MMd GF IH -> WMMd IH -> holiday
+    minimise_MM_GF_W_h_IH()
+
+    # Optimise IH administration duration, holiday duration and strength for
+    # WMMd IH -> MMd GF IH ->  holiday
+    minimise_MM_W_GF_h_IH()
+
+    # Optimise IH administration duration, holiday duration and strengths for
+    # MMd GF IH -> IH combination -> WMMd IH -> holiday
+    minimise_MM_GF_comb_W_h_IH()
+
+    # Optimise IH administration duration, holiday duration and strengths for
+    # WMMd IH -> IH combination -> MMd GF IH -> holiday
+    minimise_MM_W_comb_GF_h_IH()
+
+    """The weighted optimisation"""
+    # Optimise IH administration and holiday duration and strength for MMd GF IH
+    # -> WMMd IH -> holiday where the weight of the MMr relative to the MMd can
+    # be specified
+    relative_weight_MMr = 1.2
+    minimise_MM_GF_W_h_IH_w(relative_weight_MMr)
+
+    # Optimise IH administration and holiday duration and strength for WMMd IH ->
+    # MMd GF IH -> holiday where the weight of the MMr relative to the MMd can be
+    # specified
+    relative_weight_MMr = 1.2
+    minimise_MM_W_GF_h_IH_w(relative_weight_MMr)
+
+    # Optimise IH administration and holiday duration and strengths for MMd GF IH
+    # -> IH combination -> WMMd IH -> holiday where the weight of the MMr relative
+    # to the MMd can be specified
+    relative_weight_MMr = 1.2
+    minimise_MM_GF_comb_W_h_IH_w(relative_weight_MMr)
+
+    # Optimise IH administration and holiday duration and strengths for WMMd IH
+    # -> IH combination -> MMd GF IH -> holiday where the weight of the MMr
+    # relative to the MMd can be specified
+    relative_weight_MMr = 1.2
+    minimise_MM_W_comb_GF_h_IH_w(relative_weight_MMr)
 
 
 def dOC_dt(nOC, nOB, nMMd, nMMr, gr_OC, dr_OC, matrix):
