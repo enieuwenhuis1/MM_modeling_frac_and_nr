@@ -8,7 +8,7 @@ Description:  Code with the model that simulates the dynamics in the multiple
               MM cells (MMd), resistant MM cells (MMr), osteoblasts (OB) and
               osteoclasts (OC). The model has collective interactions and linear
               benefits and is made in the framework of evolutionary game theory.
-              In this model, there is looked at the fraction dynamics of the four 
+              In this model, there is looked at the fraction dynamics of the four
               cell types during different IH administration methods. The IHs have
               not only an influence on the MMd but also on the OB and OC.
 

@@ -10,8 +10,9 @@ Description:  The code of the model that simulates the dynamics in the multiple
               in the framework of evolutionary game theory. In this model, there
               is looked at the number dynamics of the four cell types during
               different IH administration methods. Furthermore, it contains a
-              (weighted) optimisation to find the best holiday duration,
-              administration duration and IH strength.
+              (weighted) optimisation to find the best administration manner and
+              combination. The IHs do not only influence on the MMd but also the
+              OB and OC.
 
 Example interaction matrix:
 M = np.array([
@@ -37,20 +38,20 @@ import doctest
 def main():
     # Do doc tests
     doctest.testmod()
-    #
-    # # Make a figure showing the cell number dynamics by traditional therapy and
-    # # by adaptive therapy
-    # list_t_steps_drug = [3, 3, 3]
-    # Figure_continuous_MTD_vs_AT_realistic(90, list_t_steps_drug)
-    #
-    # # Make a 3D figure showthing the effect of different drug holiday and
-    # # administration periods
-    # Figure_3D_MM_numb_IH_add_and_holiday()
-    #
-    # # Make a figure of the number dynamics whereby there is a limit for the MMd
-    # # and MMr number. The last paramter is low or high-> low: the MMr limit values
-    # # are low (< 500), high: the MMr limit values are high (> 500)
-    # Figure_AT_MMd_MMr_limit(500, 250)
+    
+    # Make a figure showing the cell number dynamics by traditional therapy and
+    # by adaptive therapy
+    list_t_steps_drug = [3, 3, 3]
+    Figure_continuous_MTD_vs_AT_realistic(90, list_t_steps_drug)
+
+    # Make a 3D figure showthing the effect of different drug holiday and
+    # administration periods
+    Figure_3D_MM_numb_IH_add_and_holiday()
+
+    # Make a figure of the number dynamics whereby there is a limit for the MMd
+    # and MMr number. The last paramter is low or high-> low: the MMr limit values
+    # are low (< 500), high: the MMr limit values are high (> 500)
+    Figure_AT_MMd_MMr_limit(500, 250)
 
     # """ The optimisation """
     # Optimise IH administration duration, holiday duration and strength for
