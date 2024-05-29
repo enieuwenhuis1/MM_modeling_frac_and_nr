@@ -6,15 +6,17 @@ Student ID:        13717405
 Description:  The code of the model that simulates the dynamics in the multiple
               myeloma (MM) microenvironment with four cell types: drug-sensitive
               MM cells (MMd), resistant MM cells (MMr), osteoblasts (OB) and
-              osteoclasts (OC). The model is a public goods game in the framework
-              of evolutionary game theory with collective interactions. In this
-              model, there is looked at the numbers of the four cell types.
+              osteoclasts (OC). The model has collective interactions and is made
+              in the framework of evolutionary game theory. In this model, there
+              is looked at the number dynamics of the four cell types during
+              different IH administration methods. Furthermore, it contains a
+              (weighted) optimisation to find the best holiday duration,
+              administration duration and IH strength.
 
               Compared to MM_model_nr_IH_inf.py there is a resistance mutation
               rate implemented. This mutation rate indicates how frequently MMd
               undergo mutations that make them resistant to the IHs, therefore
-              transforming into MMr.
-
+              transforming them into MMr.
 
 Example interaction matrix:
 M = np.array([
@@ -39,7 +41,7 @@ import doctest
 def main():
     # Do doc tests
     doctest.testmod()
-    
+
     # Make a figure showing the cell number dynamics by traditional therapy and
     # by adaptive therapy
     list_t_steps_drug = [3,3,3]

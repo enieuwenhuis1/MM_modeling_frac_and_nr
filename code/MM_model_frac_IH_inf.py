@@ -6,11 +6,11 @@ Student ID:        13717405
 Description:  Code with the model that simulates the dynamics in the multiple
               myeloma (MM) microenvironment with four cell types: drug-sensitive
               MM cells (MMd), resistant MM cells (MMr), osteoblasts (OB) and
-              osteoclasts (OC). The model is a public goods game in the framework
-              of evolutionary game theory with collective interactions and linear
-              benefits. In this model, there is looked at the fractions of the
-              four cell types. The IHs have not only an influence on the MMd but
-              also on the OB and OC.
+              osteoclasts (OC). The model has collective interactions and linear
+              benefits and is made in the framework of evolutionary game theory.
+              In this model, there is looked at the fraction dynamics of the four 
+              cell types during different IH administration methods. The IHs have
+              not only an influence on the MMd but also on the OB and OC.
 
 Example interaction matrix:
 M = np.array([
