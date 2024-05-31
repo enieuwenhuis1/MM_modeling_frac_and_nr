@@ -329,7 +329,7 @@ def frac_to_fitness_values(dataframe_fractions, N, cOC, cOB, cMMd, cMMr, matrix,
 
     Parameters:
     -----------
-    dataframe_fractions: Dataframe
+    dataframe_fractions: DataFrame
         Dataframe with the fractions of the OB, OC MMd and MMr on every
         timepoint.
     N: Int
@@ -349,7 +349,7 @@ def frac_to_fitness_values(dataframe_fractions, N, cOC, cOB, cMMd, cMMr, matrix,
 
     Returns:
     --------
-    dataframe_fitness: Dataframe
+    dataframe_fitness: DataFrame
         A dataframe with the fitness values of the OB, OC, MMd and MMr and
         the average fitness on every time point.
     """
@@ -413,11 +413,11 @@ def combine_dataframes(df_1, df_2):
     """
     # Check if the dataframes are empty
     if df_1.empty or df_2.empty:
-        # return the dataframe that is not empty
+        # Return the dataframe that is not empty
         combined_df = df_1 if not df_1.empty else df_2
 
     else:
-        # delete the NA columns
+        # Delete the NA columns
         df_1 = df_1.dropna(axis=1, how='all')
         df_2 = df_2.dropna(axis=1, how='all')
 
@@ -505,7 +505,7 @@ def switch_dataframe(time_start_drugs, n_switches, t_steps_drug, t_steps_no_drug
 
     Returns:
     --------
-    df_total_switch: Dataframe
+    df_total_switch: DataFrame
         Dataframe with the xOC, xOB, xMMd and xMMr values over time.
     """
     # Set initial values

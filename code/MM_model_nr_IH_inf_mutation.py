@@ -621,11 +621,12 @@ def combine_dataframes(df_1, df_2):
     """
     # Check if the dataframes are empty
     if df_1.empty or df_2.empty:
-        # return the dataframe that is not empty
+
+        # Return the dataframe that is not empty
         combined_df = df_1 if not df_1.empty else df_2
 
     else:
-        # delete the NA columns
+        # Delete the NA columns
         df_1 = df_1.dropna(axis=1, how='all')
         df_2 = df_2.dropna(axis=1, how='all')
 
@@ -708,7 +709,7 @@ def make_part_df(dataframe, start_time, time, growth_rates, decay_rates, matrix,
     -----------
     dataframe: DataFrame
         The dataframe to which the extra data should be added.
-    start_time:
+    start_time: Int
         The last generation in the current dataframe
     time: Int
         The time the cell number should be calculated
@@ -890,7 +891,7 @@ def switch_dataframe_GF_W_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
     Returns:
     --------
-    df_total_switch: Dataframe
+    df_total_switch: DataFrame
         Dataframe with the nOC, nOB, nMMd and nMMr values over time.
     """
     # Set initial values
@@ -993,7 +994,7 @@ def switch_dataframe_W_GF_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
     Returns:
     --------
-    df_total_switch: Dataframe
+    df_total_switch: DataFrame
         Dataframe with the nOC, nOB, nMMd and nMMr values over time.
     """
     # Set initial values
@@ -1102,7 +1103,7 @@ def switch_dataframe_W_comb_GF_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
     Returns:
     --------
-    df_total_switch: Dataframe
+    df_total_switch: DataFrame
         Dataframe with the nOC, nOB, nMMd and nMMr values over time.
     """
     # Set initial values
@@ -1222,7 +1223,7 @@ def switch_dataframe_GF_comb_W_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
     Returns:
     --------
-    df_total_switch: Dataframe
+    df_total_switch: DataFrame
         Dataframe with the nOC, nOB, nMMd and nMMr values over time.
     """
     # Set initial values
@@ -1332,7 +1333,7 @@ def minimal_tumour_nr_t_3_situations_IH(t_steps_IH_strength, function_order,
 
     Returns:
     --------
-    average_MM_number: float
+    average_MM_number: Float
         The average (weighted) MM number in the last period.
     """
     # Unpack the values that should be optimised
@@ -1410,7 +1411,7 @@ def minimal_tumour_nr_t_4_situations_IH(t_steps_IH_strength, function_order,
 
     Returns:
     --------
-    average_MM_number: float
+    average_MM_number: Float
         The average (weighted) MM number in the last period.
     """
     # Unpack the values that should be optimised
@@ -1808,7 +1809,6 @@ def minimise_MM_W_comb_GF_h_IH():
     """Function that determines the best IH administration durations and holiday
     durations when the order is WMMd IH -> IH combination -> MMd GF IH -> holiday
     -> WMMd IH etc.It also determines the best MMd GF IH and WMMd IH strength."""
-
 
     # Set start values
     nOC = 20

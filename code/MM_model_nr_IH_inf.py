@@ -53,7 +53,7 @@ def main():
     # are low (< 500), high: the MMr limit values are high (> 500)
     Figure_AT_MMd_MMr_limit(500, 250)
 
-    # """ The optimisation """
+    """ The optimisation """
     # Optimise IH administration duration, holiday duration and strength for
     # MMd GF IH -> WMMd IH -> holiday
     minimise_MM_GF_W_h_IH()
@@ -446,7 +446,7 @@ def dynamics_MMd_MMr_limits(time_IH, time_end, upper_limit_MMd, upper_limit_MMr,
 
     Returns:
     --------
-    df_numbers: Dataframe
+    df_numbers: DataFrame
         The dataframe with the number per cell type over the time
     average_a_duration: Float
         The average administration duration
@@ -576,11 +576,11 @@ def combine_dataframes(df_1, df_2):
     # Check if the dataframes are empty
     if df_1.empty or df_2.empty:
 
-        # return the dataframe that is not empty
+        # Return the dataframe that is not empty
         combined_df = df_1 if not df_1.empty else df_2
 
     else:
-        # delete the NA columns
+        # Delete the NA columns
         df_1 = df_1.dropna(axis=1, how='all')
         df_2 = df_2.dropna(axis=1, how='all')
 
@@ -662,7 +662,7 @@ def make_part_df(dataframe, start_time, time, growth_rates, decay_rates, matrix,
     -----------
     dataframe: DataFrame
         The dataframe to which the extra data should be added.
-    start_time:
+    start_time: Int
         The last generation in the current dataframe
     time: Int
         The time the cell number should be calculated
@@ -747,7 +747,7 @@ def switch_dataframe(time_IH, n_switches, t_steps_drug, t_steps_no_drug, nOC,
 
     Returns:
     --------
-    df_total_switch: Dataframe
+    df_total_switch: DataFrame
         Dataframe with the nOC, nOB, nMMd and nMMr values over time.
     """
     # Set initial values
@@ -839,7 +839,7 @@ def switch_dataframe_GF_W_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
     Returns:
     --------
-    df_total_switch: Dataframe
+    df_total_switch: DataFrame
         Dataframe with the nOC, nOB, nMMd and nMMr values over time.
     """
     # Set initial values
@@ -941,7 +941,7 @@ def switch_dataframe_W_GF_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
     Returns:
     --------
-    df_total_switch: Dataframe
+    df_total_switch: DataFrame
         Dataframe with the nOC, nOB, nMMd and nMMr values over time.
     """
     # Set initial values
@@ -1050,7 +1050,7 @@ def switch_dataframe_W_comb_GF_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
     Returns:
     --------
-    df_total_switch: Dataframe
+    df_total_switch: DataFrame
         Dataframe with the nOC, nOB, nMMd and nMMr values over time.
     """
     # Set initial values
@@ -1169,7 +1169,7 @@ def switch_dataframe_GF_comb_W_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
 
     Returns:
     --------
-    df_total_switch: Dataframe
+    df_total_switch: DataFrame
         Dataframe with the nOC, nOB, nMMd and nMMr values over time.
     """
     # Set initial values
@@ -1279,7 +1279,7 @@ def minimal_tumour_nr_t_3_situations(t_steps_IH_strength, function_order, nOC,
 
     Returns:
     --------
-    average_MM_number: float
+    average_MM_number: Float
         The average total MM number in the last period.
     """
     # Unpack the values that should be optimised
@@ -1421,7 +1421,7 @@ def minimal_tumour_nr_t_4_situations_IH(t_steps_IH_strength, function_order,
 
     Returns:
     --------
-    average_MM_number: float
+    average_MM_number: Float
         The average (weighted) MM number in the last period.
     """
     # Unpack the values that should be optimised
@@ -1597,7 +1597,7 @@ def x_y_z_axis_values_3d_plot(dataframe, name):
 
     Parameters:
     -----------
-    Dataframe: dataFrame
+    Dataframe: DataFrame
         The dataframe with the generated data
     name: String
         The name of the administered IH(s)
@@ -1685,7 +1685,7 @@ def minimal_tumour_numb_t_steps(t_steps_drug, t_steps_no_drug, nOC, nOB, nMMd,
 
     Returns:
     --------
-    average_MM_number: float
+    average_MM_number: Float
         The average total MM number in the last period.
 
     """
@@ -1829,8 +1829,9 @@ def Figure_continuous_MTD_vs_AT_realistic(n_switches, t_steps_drug):
     axs[0, 0].axvspan(xmin = 30, xmax = 302, color = 'lightgray', alpha = 0.45)
     axs[0, 0].set_xlim(1, 302)
     axs[0, 0].set_xlabel(' ')
-    axs[0, 0].set_ylabel(r'Cell number ($n_{i}$)', fontsize=12)
-    axs[0, 0].set_title(f"Traditional therapy MMd GF IH ", fontsize=14)
+    axs[0, 0].set_ylabel(r'Cell number ($n_{i}$)', fontsize=14)
+    axs[0, 0].set_title(f"Traditional therapy MMd GF IH ", fontsize=16)
+    axs[0, 0].set_yticks([0, 2500, 5000, 7500, 10000, 12500, 15000, 17500, 20000])
     axs[0, 0].grid(True, linestyle='--')
 
     # Plot the data without drug holidays in the second plot
@@ -1841,7 +1842,7 @@ def Figure_continuous_MTD_vs_AT_realistic(n_switches, t_steps_drug):
     axs[0, 1].set_xlim(1, 302)
     axs[0, 1].set_xlabel(' ')
     axs[0, 1].set_ylabel(' ')
-    axs[0, 1].set_title(r"Traditional therapy $W_{MMd}$ IH", fontsize=14)
+    axs[0, 1].set_title(r"Traditional therapy $W_{MMd}$ IH", fontsize=16)
     axs[0, 1].grid(True, linestyle='--')
     axs[0, 1].set_yticks([0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000])
 
@@ -1853,7 +1854,8 @@ def Figure_continuous_MTD_vs_AT_realistic(n_switches, t_steps_drug):
     axs[0, 2].set_xlim(1, 302)
     axs[0, 2].set_xlabel(' ')
     axs[0, 2].set_ylabel(' ')
-    axs[0, 2].set_title(r"Traditional therapy IH combination", fontsize=14)
+    axs[0, 2].set_title(r"Traditional therapy IH combination", fontsize=16)
+    axs[0, 2].set_yticks([0, 2500, 5000, 7500, 10000, 12500, 15000, 17500, 20000])
     axs[0, 2].grid(True, linestyle='--')
 
     # Plot the data with drug holidays in the fourth plot
@@ -1862,9 +1864,9 @@ def Figure_continuous_MTD_vs_AT_realistic(n_switches, t_steps_drug):
                                                     legend=False, ax=axs[1, 0])
     axs[1, 0].axvspan(xmin = 30, xmax = 302, color = 'lightgray', alpha = 0.45)
     axs[1, 0].set_xlim(1, 302)
-    axs[1, 0].set_xlabel('Generations', fontsize=12)
-    axs[1, 0].set_ylabel(r'Cell number ($n_{i}$)', fontsize=12)
-    axs[1, 0].set_title(f"Adaptive therapy MMd GF IH", fontsize=14)
+    axs[1, 0].set_xlabel('Generations', fontsize=14)
+    axs[1, 0].set_ylabel(r'Cell number ($n_{i}$)', fontsize=14)
+    axs[1, 0].set_title(f"Adaptive therapy MMd GF IH", fontsize=16)
     axs[1, 0].grid(True, linestyle='--')
     plt.grid(True)
 
@@ -1874,9 +1876,9 @@ def Figure_continuous_MTD_vs_AT_realistic(n_switches, t_steps_drug):
                                                     legend=False, ax=axs[1, 1])
     axs[1, 1].axvspan(xmin = 30, xmax = 302, color = 'lightgray', alpha = 0.45)
     axs[1, 1].set_xlim(1, 302)
-    axs[1, 1].set_xlabel('Generations', fontsize=12)
+    axs[1, 1].set_xlabel('Generations', fontsize=14)
     axs[1, 1].set_ylabel(' ')
-    axs[1, 1].set_title(r"Adaptive therapy $W_{MMd}$ IH", fontsize=14)
+    axs[1, 1].set_title(r"Adaptive therapy $W_{MMd}$ IH", fontsize=16)
     axs[1, 1].grid(True, linestyle='--')
 
     # Plot the data with drug holidays in the sixth plot
@@ -1885,16 +1887,16 @@ def Figure_continuous_MTD_vs_AT_realistic(n_switches, t_steps_drug):
                                                     legend=False, ax=axs[1, 2])
     axs[1, 2].axvspan(xmin = 30, xmax = 302, color = 'lightgray', alpha = 0.45)
     axs[1, 2].set_xlim(1, 302)
-    axs[1, 2].set_xlabel('Generations', fontsize=12)
+    axs[1, 2].set_xlabel('Generations', fontsize=14)
     axs[1, 2].set_ylabel(' ')
-    axs[1, 2].set_title(r"Adaptive therapy IH combination", fontsize=14)
+    axs[1, 2].set_title(r"Adaptive therapy IH combination", fontsize=16)
     axs[1, 2].grid(True, linestyle='--')
 
     # Create a single legend outside of all plots
     legend_labels = ['OC number', 'OB number', 'MMd number', 'MMr number',
                                                                     'Therapy']
     fig.legend(labels = legend_labels, loc='upper center', ncol=5,
-                                                            fontsize='x-large')
+                                                            fontsize='xx-large')
     save_Figure(plt, 'line_plot_cell_nr_IH_inf_AT_MTD_r',
                                  r'..\visualisation\results_model_nr_IH_inf')
     plt.show()
@@ -2444,7 +2446,7 @@ def minimise_MM_W_GF_h_changing_W_IH(growth_rates, growth_rates_IH, decay_rates,
 
     Returns:
     --------
-    df_W_GF_h_change_W: Dataframe
+    df_W_GF_h_change_W: DataFrame
         Dataframe with the MM number for different WMMd IH strengths.
     """
 
@@ -2533,7 +2535,7 @@ def minimise_MM_W_GF_h_changing_GF_IH(growth_rates, growth_rates_IH, decay_rates
 
     Returns:
     --------
-    df_W_GF_h_change_GF: Dataframe
+    df_W_GF_h_change_GF: DataFrame
         Dataframe with the MM number for different MMd GF IH strengths.
     """
 
@@ -2623,7 +2625,7 @@ def minimise_MM_GF_W_h_changing_W_IH(growth_rates, growth_rates_IH, decay_rates,
 
     Returns:
     --------
-    df_GF_W_h_change_W: Dataframe
+    df_GF_W_h_change_W: DataFrame
         Dataframe with the MM number for different WMMd IH strengths.
     """
 
@@ -2710,7 +2712,7 @@ def minimise_MM_GF_W_h_changing_GF_IH(growth_rates, growth_rates_IH, decay_rates
 
     Returns:
     --------
-    df_GF_W_h_change_GF: Dataframe
+    df_GF_W_h_change_GF: DataFrame
         Dataframe with the MM number for different MMd GF IH strengths.
     """
 
