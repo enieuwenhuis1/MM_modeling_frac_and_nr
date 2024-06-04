@@ -21,14 +21,14 @@ Some libraries need to be installed to run the codes in the code folder.
 
 Libraries that need to be installed for MM_model_frac_IH_inf.py,
 MM_model_nr_IH_inf.py and MM_model_nr_IH_inf_mutation.py:
-* numpy (version 1.26.0)
-    - install: pip install numpy==1.26.0
-* matplotlib (version 3.8.0)
-    - install: pip install matplotlib==3.8.0
-* pandas (version 2.1.3)
-    - install: pip install pandas==2.1.3
-* scipy (version 1.11.4)
-    - install: pip install scipy==1.11.4
+* numpy (version 1.25.2)
+    - install: python -m pip install numpy==1.25.2
+* matplotlib (version 3.7.2)
+    - install: python -m pip install matplotlib==3.7.2
+* pandas (version 2.2.2)
+    - install: python -m pip install pandas==2.2.2
+* scipy (version 1.13.1)
+    - install: python -m pip install scipy==1.13.1
 
 
 FRACTION MODEL: MM_model_frac_IH_inf.py
