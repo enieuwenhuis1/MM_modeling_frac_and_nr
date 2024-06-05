@@ -1,7 +1,8 @@
 """
-Author:            Eva Nieuwenhuis
-University group:  Biosystems Data Analysis Group, UvA
-Student ID:        13717405
+Author:       Eva Nieuwenhuis
+Student ID:   13717405
+University:   UvA
+Group:        Biosystems Data Analysis Group
 
 Description:  The code of the model that simulates the dynamics in the multiple
               myeloma (MM) microenvironment with four cell types: drug-sensitive
@@ -43,7 +44,7 @@ def main():
     # by adaptive therapy
     list_t_steps_drug = [3, 3, 3]
     Figure_continuous_MTD_vs_AT_realistic(90, list_t_steps_drug)
-
+    
     # Make a 3D figure showthing the effect of different drug holiday and
     # administration periods
     Figure_3D_MM_numb_IH_add_and_holiday()
@@ -214,7 +215,8 @@ def dOC_dt(nOC, nOB, nMMd, nMMr, gr_OC, dr_OC, matrix):
     b4_1 = matrix[0, 3]
 
     # Calculate the Change on in the number of OC
-    change_nOC = (gr_OC * nOC**b1_1 * nOB**b2_1 * nMMd**b3_1 * nMMr**b4_1) - (dr_OC * nOC)
+    change_nOC = (gr_OC * nOC**b1_1 * nOB**b2_1 * nMMd**b3_1 * nMMr**b4_1) - \
+                                                                (dr_OC * nOC)
     return change_nOC
 
 def dOB_dt(nOC, nOB, nMMd, nMMr, gr_OB, dr_OB, matrix):

@@ -1,23 +1,22 @@
-Author:            Eva Nieuwenhuis
-University group:  Biosystems Data Analysis Group, UvA
-Student ID:        13717405
+Author:       Eva Nieuwenhuis
+Student ID:   13717405
+University:   UvA
+Group:        Biosystems Data Analysis Group
 
 MATHEMATICAL MODEL MULTIPLE MYELOMA
 The goal was to make fraction and number models that simulate the interactions
-between four cell types In the MM microenvironment: drug-sensitive MM cells (MMd),
-resistant MM cells (MMr), osteoblasts (OB) and osteoclasts (OC). All models
-used collective interactions and were made in the framework of evolutionary game
-theory. The models were used to determine the effect of traditional therapy and
-adaptive therapy to study the impact of the inhibitors (IHs) on the cell type
-fractions and numbers for different strengths, administration durations and
-holiday durations. In addition, the IH holiday duration, administration duration
-and strength were optimised.
+between four cell types in the MM microenvironment: drug-sensitive MM cells
+(MMd), resistant MM cells (MMr), osteoblasts (OB) and osteoclasts (OC). All
+models used collective interactions and were made in the framework of evolutionary
+game theory. The models were utilised to determine the effect of traditional and
+adaptive therapy and to study the impact of different inhibitor (IH) strengths,
+administration durations and holiday durations on the cell type. In addition,
+the IH holiday duration, administration duration and strength were optimised.
 
 
 PYTHON AND LIBRARY VERSION
 The models were written in Python code (version 3.11.4) using Atom (version 1.60.0).
 Some libraries need to be installed to run the codes in the code folder.
-
 
 Libraries that need to be installed for MM_model_frac_IH_inf.py,
 MM_model_nr_IH_inf.py and MM_model_nr_IH_inf_mutation.py:
@@ -88,6 +87,9 @@ are stored. The folders which visualisation contains are:
 
 
 HOW TO RUN THE CODES
+To run the code, the code folder should first be entered. To do this use: cd code.
+Then the codes can be run using the following commands.
+
 Fraction model, MM_model_frac_IH_inf.py
         - python MM_model_frac_IH_inf.py
 
