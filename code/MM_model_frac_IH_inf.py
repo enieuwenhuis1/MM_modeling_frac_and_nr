@@ -38,10 +38,10 @@ def main():
     # Do doc tests
     doctest.testmod()
 
-    # # Make a figure showing the cell fraction dynamics by traditional therapy and
-    # # by adaptive therapy
-    # list_t_steps_drug = [5, 5, 5]
-    # Figure_continuous_MTD_vs_AT_realistic(18, list_t_steps_drug)
+    # Make a figure showing the cell fraction dynamics by traditional therapy
+    # and by adaptive therapy
+    list_t_steps_drug = [5, 5, 5]
+    Figure_continuous_MTD_vs_AT_realistic(18, list_t_steps_drug)
 
     # Make a 3D figure showthing the effect of different drug holiday and
     # administration periods
@@ -491,7 +491,7 @@ def make_part_df(dataframe, start_time, time, N, cOC, cOB, cMMd, cMMr, matrix,
 
     Returns:
     --------
-    df_total: Dataframe
+    df_total: DataFrame
         Dataframe with the extra nOC, nOB, nMMd and nMMr values
     """
     # Determine the start fraction values

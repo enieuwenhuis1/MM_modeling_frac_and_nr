@@ -15,8 +15,8 @@ the IH holiday duration, administration duration and strength were optimised.
 
 
 PYTHON AND LIBRARY VERSION
-The models were written in Python code (version 3.11.4) using Atom (version 1.60.0).
-Some libraries need to be installed to run the codes in the code folder.
+The models were written in Python code (version 3.11.4) using Atom (version
+1.60.0). Some libraries need to be installed to run the codes in the code folder.
 
 Libraries that need to be installed for MM_model_frac_IH_inf.py,
 MM_model_nr_IH_inf.py and MM_model_nr_IH_inf_mutation.py:

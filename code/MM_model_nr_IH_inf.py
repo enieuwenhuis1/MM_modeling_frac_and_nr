@@ -146,7 +146,7 @@ def main():
     minimise_MM_W_GF_h_changing_GF_IH([0.72, 1.08, 0.27, 0.27], [0.63, 1.17, 0.27,
                        0.27], [0.81, 0.072, 0.18, 0.09], [0.9, 0.072, 0.18, 0.09],
                                     'df_MM_W_GF_h_changing_GF_IH_l_gr_dr.csv')
-
+    
     """The weighted optimisation"""
     # Optimise IH administration and holiday duration and strength for MMd GF IH
     # -> WMMd IH -> holiday where the weight of the MMr relative to the MMd can
@@ -308,8 +308,8 @@ def dMMd_dt(nOC, nOB, nMMd, nMMr, gr_MMd, dr_MMd, matrix, WMMd_inhibitor = 0):
     b4_3 = matrix[2, 3]
 
     # Calculate the change in the number of MMd
-    change_nMMd = (gr_MMd * nOC**b1_3 * nOB**b2_3 * nMMd**b3_3 * nMMr**b4_3 - nMMd * \
-                                             WMMd_inhibitor) - (dr_MMd * nMMd)
+    change_nMMd = (gr_MMd * nOC**b1_3 * nOB**b2_3 * nMMd**b3_3 * nMMr**b4_3 - \
+                                    nMMd * WMMd_inhibitor) - (dr_MMd * nMMd)
 
     return change_nMMd
 
@@ -681,7 +681,7 @@ def make_part_df(dataframe, start_time, time, growth_rates, decay_rates, matrix,
 
     Returns:
     --------
-    df_total: Dataframe
+    df_total: DataFrame
         Dataframe with the extra nOC, nOB, nMMd and nMMr values
     """
 
@@ -706,6 +706,48 @@ def make_part_df(dataframe, start_time, time, growth_rates, decay_rates, matrix,
 
     return df_total
 
+def start_df(t_steps, nOC, nOB, nMMd, nMMr, growth_rates, decay_rates,
+             matrix_no_GF_IH):
+    """ Function that maked a dataframe with the cell numbers over time
+
+    Parameters:
+    -----------
+    t_steps:
+        The number of generations the therapy is given
+    nOC: Float
+        Number of OC.
+    nOB: Float
+        Number of OB.
+    nMMd: Float
+        Number of the MMd.
+    nMMr: Float
+        Number of the MMr.
+    growth_rates: List
+        List with the growth rate values of the OC, OB, MMd and MMr.
+    decay_rates: List
+        List with the decay rate values of OC, OB, MMd and MMr.
+    matrix_no_GF_IH: Numpy.ndarray
+        4x4 matrix containing the interaction factors when no GF IH are
+        administered.
+
+    Returns:
+    --------
+    df_total_switch: DataFrame
+        Dataframe with the nOC, nOB, nMMd and nMMr values over time.
+    """
+
+    # Make a dataframe and set start parameter values
+    df_total_switch = pd.DataFrame()
+    t = np.linspace(0, t_steps, t_steps*2)
+    y0 = [nOC, nOB, nMMd, nMMr]
+    parameters = (growth_rates, decay_rates, matrix_no_GF_IH)
+
+    # Determine the ODE solutions
+    y = odeint(model_dynamics, y0, t, args=parameters)
+    df_total_switch = pd.DataFrame({'Generation': t, 'nOC': y[:, 0],
+                            'nOB': y[:, 1], 'nMMd': y[:, 2], 'nMMr': y[:, 3],
+                            'total nMM': y[:, 3]+ y[:, 2]})
+    return(df_total_switch)
 
 def switch_dataframe(time_IH, n_switches, t_steps_drug, t_steps_no_drug, nOC,
             nOB, nMMd, nMMr, growth_rates, growth_rates_IH, decay_rates,
@@ -757,20 +799,13 @@ def switch_dataframe(time_IH, n_switches, t_steps_drug, t_steps_no_drug, nOC,
     # Set initial values
     x = 0
     time = 0
-    df_total_switch = pd.DataFrame()
-    t_steps = time_IH
-    t = np.linspace(0, t_steps, t_steps*2)
-    y0 = [nOC, nOB, nMMd, nMMr]
-    parameters = (growth_rates, decay_rates, matrix_no_GF_IH)
 
-    # Determine the ODE solutions
-    y = odeint(model_dynamics, y0, t, args=parameters)
-    df_total_switch = pd.DataFrame({'Generation': t, 'nOC': y[:, 0],
-                            'nOB': y[:, 1], 'nMMd': y[:, 2], 'nMMr': y[:, 3],
-                            'total nMM': y[:, 3]+ y[:, 2]})
+    # Make dataframe
+    df_total_switch = start_df(time_IH, nOC, nOB, nMMd, nMMr, growth_rates,
+                    decay_rates, matrix_no_GF_IH)
 
     # Increase the time
-    time += t_steps
+    time += time_IH
 
     # Perform a number of switches
     for i in range(n_switches):
@@ -848,20 +883,13 @@ def switch_dataframe_GF_W_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
     # Set initial values
     x = 0
     time = 0
-    df_total_switch = pd.DataFrame()
-    t_steps = 30
-    t = np.linspace(0, t_steps, t_steps*2)
-    y0 = [nOC, nOB, nMMd, nMMr]
-    parameters = (growth_rates, decay_rates, matrix_no_GF_IH)
 
-    # Determine the ODE solutions
-    y = odeint(model_dynamics, y0, t, args=parameters)
-    df_total_switch = pd.DataFrame({'Generation': t, 'nOC': y[:, 0],
-                                'nOB': y[:, 1], 'nMMd': y[:, 2], 'nMMr': y[:, 3],
-                                'total nMM': y[:, 3]+ y[:, 2]})
+    # Make dataframe
+    df_total_switch = start_df(30, nOC, nOB, nMMd, nMMr, growth_rates,
+                    decay_rates, matrix_no_GF_IH)
 
     # Increase the time
-    time += t_steps
+    time += 30
 
     # Perform a number of rounds
     for i in range(n_rounds):
@@ -950,19 +978,13 @@ def switch_dataframe_W_GF_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
     # Set initial values
     x = 0
     time = 0
-    df_total_switch = pd.DataFrame()
-    t_steps = 30
-    t = np.linspace(0, t_steps, t_steps*2)
-    y0 = [nOC, nOB, nMMd, nMMr]
-    parameters = (growth_rates, decay_rates, matrix_no_GF_IH)
 
-    # Determine the ODE solutions
-    y = odeint(model_dynamics, y0, t, args=parameters)
-    df_total_switch = pd.DataFrame({'Generation': t, 'nOC': y[:, 0], 'nOB': y[:, 1],
-                'nMMd': y[:, 2], 'nMMr': y[:, 3], 'total nMM': y[:, 3]+ y[:, 2]})
+    # Make dataframe
+    df_total_switch = start_df(30, nOC, nOB, nMMd, nMMr, growth_rates,
+                    decay_rates, matrix_no_GF_IH)
 
     # Increase the time
-    time += t_steps
+    time += 30
 
     # Perform a number of rounds
     for i in range(n_rounds):
@@ -1059,19 +1081,13 @@ def switch_dataframe_W_comb_GF_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
     # Set initial values
     x = 0
     time = 0
-    df_total_switch = pd.DataFrame()
-    t_steps = 30
-    t = np.linspace(0, t_steps, t_steps*2)
-    y0 = [nOC, nOB, nMMd, nMMr]
-    parameters = (growth_rates, decay_rates, matrix_no_GF_IH)
 
-    # Determine the ODE solutions
-    y = odeint(model_dynamics, y0, t, args=parameters)
-    df_total_switch = pd.DataFrame({'Generation': t, 'nOC': y[:, 0], 'nOB': \
-       y[:, 1], 'nMMd': y[:, 2], 'nMMr': y[:, 3], 'total nMM': y[:, 3]+ y[:, 2]})
+    # Make dataframe
+    df_total_switch = start_df(30, nOC, nOB, nMMd, nMMr, growth_rates,
+                    decay_rates, matrix_no_GF_IH)
 
     # Increase the time
-    time += t_steps
+    time += 30
 
     # Perform a number of rounds
     for i in range(n_rounds):
@@ -1178,19 +1194,13 @@ def switch_dataframe_GF_comb_W_h(n_rounds, t_steps_GF_IH, t_steps_WMMd_IH,
     # Set initial values
     x = 0
     time = 0
-    df_total_switch = pd.DataFrame()
-    t_steps = 30
-    t = np.linspace(0, t_steps, t_steps*2)
-    y0 = [nOC, nOB, nMMd, nMMr]
-    parameters = (growth_rates, decay_rates, matrix_no_GF_IH)
 
-    # Determine the ODE solutions
-    y = odeint(model_dynamics, y0, t, args=parameters)
-    df_total_switch = pd.DataFrame({'Generation': t, 'nOC': y[:, 0], 'nOB': y[:, 1],
-                'nMMd': y[:, 2], 'nMMr': y[:, 3], 'total nMM': y[:, 3]+ y[:, 2]})
+    # Make dataframe
+    df_total_switch = start_df(30, nOC, nOB, nMMd, nMMr, growth_rates,
+                    decay_rates, matrix_no_GF_IH)
 
     # Increase the time
-    time += t_steps
+    time += 30
 
     # Perform a number of rounds
     for i in range(n_rounds):
@@ -1712,7 +1722,7 @@ def avarage_MMr_MMd_nr(dataframe, time, therapy):
 
     Parameters:
     -----------
-    dataframe: Dataframe
+    dataframe: DataFrame
         The dataframe containing the MMd and MMr numbers over time
     time: Int
         The time over which the average MMd and MMr number should be calculated
