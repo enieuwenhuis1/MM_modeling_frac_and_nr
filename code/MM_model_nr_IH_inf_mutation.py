@@ -44,28 +44,28 @@ def main():
     # Do doc tests
     doctest.testmod()
 
-    # Make a figure showing the cell number dynamics by traditional therapy and
-    # by adaptive therapy
-    list_t_steps_drug = [3,3,3]
-    Figure_continuous_MTD_vs_AT_realistic(90, list_t_steps_drug)
+    # # Make a figure showing the cell number dynamics by traditional therapy and
+    # # by adaptive therapy
+    # list_t_steps_drug = [3,3,3]
+    # Figure_continuous_MTD_vs_AT_realistic(90, list_t_steps_drug)
 
 
-    """The optimisation"""
-    # Optimise IH administration duration, holiday duration and strength for
-    # MMd GF IH -> WMMd IH -> holiday
-    minimise_MM_GF_W_h_IH()
-
-    # Optimise IH administration duration, holiday duration and strength for
-    # WMMd IH -> MMd GF IH ->  holiday
-    minimise_MM_W_GF_h_IH()
-
-    # Optimise IH administration duration, holiday duration and strengths for
-    # MMd GF IH -> IH combination -> WMMd IH -> holiday
-    minimise_MM_GF_comb_W_h_IH()
-
-    # Optimise IH administration duration, holiday duration and strengths for
-    # WMMd IH -> IH combination -> MMd GF IH -> holiday
-    minimise_MM_W_comb_GF_h_IH()
+    # """The optimisation"""
+    # # Optimise IH administration duration, holiday duration and strength for
+    # # MMd GF IH -> WMMd IH -> holiday
+    # minimise_MM_GF_W_h_IH()
+    #
+    # # Optimise IH administration duration, holiday duration and strength for
+    # # WMMd IH -> MMd GF IH ->  holiday
+    # minimise_MM_W_GF_h_IH()
+    #
+    # # Optimise IH administration duration, holiday duration and strengths for
+    # # MMd GF IH -> IH combination -> WMMd IH -> holiday
+    # minimise_MM_GF_comb_W_h_IH()
+    #
+    # # Optimise IH administration duration, holiday duration and strengths for
+    # # WMMd IH -> IH combination -> MMd GF IH -> holiday
+    # minimise_MM_W_comb_GF_h_IH()
 
     """The weighted optimisation"""
     # Optimise IH administration and holiday duration and strength for MMd GF IH
@@ -687,6 +687,40 @@ def save_optimised_results(results, file_path):
         writer.writeheader()
         for result in results_to_saved:
             writer.writerow(result)
+
+def optimise_matrix():
+    """Function that returns theinteraction matrices that are used for the
+    optimisation. The matrices are for situations with and without IHs
+    administered.
+
+    Returns:
+    -----------
+    [matrix_no_GF_IH, matrix_GF_IH, matrix_IH_comb]: Numpy.ndarray
+        The interaction matrices used during the optimisation.
+    """
+
+    # Payoff matrix when no drugs are present
+    matrix_no_GF_IH = np.array([
+        [0.0, 0.4, 0.65, 0.55],
+        [0.3, 0.0, -0.3, -0.3],
+        [0.6, 0.0, 0.2, 0.0],
+        [0.55, 0.0, -0.6, 0.4]])
+
+    # Payoff matrix when only GF inhibitor drugs are present
+    matrix_GF_IH = np.array([
+        [0.0, 0.4, 0.65, 0.55],
+        [0.3, 0.0, -0.3, -0.3],
+        [0.2, 0.0, 0.2, 0.0],
+        [0.55, 0.0, -0.6, 0.4]])
+
+    # Payoff matrix when both inhibitor drugs are present
+    matrix_IH_comb = np.array([
+        [0.0, 0.4, 0.65, 0.55],
+        [0.3, 0.0, -0.3, -0.3],
+        [0.4, 0.0, 0.2, 0.0],
+        [0.55, 0.0, -0.8, 0.4]])
+
+    return matrix_no_GF_IH, matrix_GF_IH, matrix_IH_comb
 
 def save_Figure(figure, file_name, folder_path):
     """Save the Figure to a specific folder.
@@ -1726,19 +1760,8 @@ def minimise_MM_GF_W_h_IH():
     growth_rates_IH = [0.7, 1.3, 0.3, 0.3]
     decay_rates_IH = [1.0, 0.08, 0.2, 0.1]
 
-    # Payoff matrix when no drugs are present
-    matrix_no_GF_IH = np.array([
-        [0.0, 0.4, 0.65, 0.55],
-        [0.3, 0.0, -0.3, -0.3],
-        [0.6, 0.0, 0.2, 0.0],
-        [0.55, 0.0, -0.6, 0.4]])
-
-    # Payoff matrix when only GF inhibitor drugs are present
-    matrix_GF_IH = np.array([
-        [0.0, 0.4, 0.65, 0.55],
-        [0.3, 0.0, -0.3, -0.3],
-        [0.2, 0.0, 0.2, 0.0],
-        [0.55, 0.0, -0.6, 0.4]])
+    # Payoff matrices
+    matrix_no_GF_IH, matrix_GF_IH, matrix_IH_comb = optimise_matrix()
 
     # Optimise the administration and holiday durations and the IH strengths
     # t_step_IH_strength = [GF IH t, W IH t, h t, GF IH s, W IH s]
@@ -1780,19 +1803,8 @@ def minimise_MM_W_GF_h_IH():
     growth_rates_IH = [0.7, 1.3, 0.3, 0.3]
     decay_rates_IH = [1.0, 0.08, 0.2, 0.1]
 
-    # Payoff matrix when no drugs are present
-    matrix_no_GF_IH = np.array([
-        [0.0, 0.4, 0.65, 0.55],
-        [0.3, 0.0, -0.3, -0.3],
-        [0.6, 0.0, 0.2, 0.0],
-        [0.55, 0.0, -0.6, 0.4]])
-
-    # Payoff matrix when only GF inhibitor drugs are present
-    matrix_GF_IH = np.array([
-        [0.0, 0.4, 0.65, 0.55],
-        [0.3, 0.0, -0.3, -0.3],
-        [0.2, 0.0, 0.2, 0.0],
-        [0.55, 0.0, -0.6, 0.4]])
+    # Payoff matrices
+    matrix_no_GF_IH, matrix_GF_IH, matrix_IH_comb = optimise_matrix()
 
     # Optimise the administration and holiday durations and the IH strengths
     # t_step_IH_strength = [GF IH t, W IH t, h t, GF IH s, W IH s]
@@ -1835,26 +1847,8 @@ def minimise_MM_W_comb_GF_h_IH():
     growth_rates_IH = [0.7, 1.3, 0.3, 0.3]
     decay_rates_IH = [1.0, 0.08, 0.2, 0.1]
 
-    # Payoff matrix when no drugs are present
-    matrix_no_GF_IH = np.array([
-        [0.0, 0.4, 0.65, 0.55],
-        [0.3, 0.0, -0.3, -0.3],
-        [0.6, 0.0, 0.2, 0.0],
-        [0.55, 0.0, -0.6, 0.4]])
-
-    # Payoff matrix when only GF inhibitor drugs are present
-    matrix_GF_IH = np.array([
-        [0.0, 0.4, 0.65, 0.55],
-        [0.3, 0.0, -0.3, -0.3],
-        [0.2, 0.0, 0.2, 0.0],
-        [0.55, 0.0, -0.6, 0.4]])
-
-    # Payoff matrix when both inhibitor drugs are present
-    matrix_IH_comb = np.array([
-        [0.0, 0.4, 0.65, 0.55],
-        [0.3, 0.0, -0.3, -0.3],
-        [0.4, 0.0, 0.2, 0.0],
-        [0.55, 0.0, -0.8, 0.4]])
+    # Payoff matrices
+    matrix_no_GF_IH, matrix_GF_IH, matrix_IH_comb = optimise_matrix()
 
     # Optimise the administration and holiday durations and the IH strengths
     # t_step_IH_strength = [GF IH t, W IH t, comb t, h t, GF IH s, comb GF IH s
@@ -1902,26 +1896,8 @@ def minimise_MM_GF_comb_W_h_IH():
     growth_rates_IH = [0.7, 1.3, 0.3, 0.3]
     decay_rates_IH = [1.0, 0.08, 0.2, 0.1]
 
-    # Payoff matrix when no drugs are present
-    matrix_no_GF_IH = np.array([
-        [0.0, 0.4, 0.65, 0.55],
-        [0.3, 0.0, -0.3, -0.3],
-        [0.6, 0.0, 0.2, 0.0],
-        [0.55, 0.0, -0.6, 0.4]])
-
-    # Payoff matrix when only GF inhibitor drugs are present
-    matrix_GF_IH = np.array([
-        [0.0, 0.4, 0.65, 0.55],
-        [0.3, 0.0, -0.3, -0.3],
-        [0.2, 0.0, 0.2, 0.0],
-        [0.55, 0.0, -0.6, 0.4]])
-
-    # Payoff matrix when both inhibitor drugs are present
-    matrix_IH_comb = np.array([
-        [0.0, 0.4, 0.65, 0.55],
-        [0.3, 0.0, -0.3, -0.3],
-        [0.4, 0.0, 0.2, 0.0],
-        [0.55, 0.0, -0.8, 0.4]])
+    # Payoff matrices
+    matrix_no_GF_IH, matrix_GF_IH, matrix_IH_comb = optimise_matrix()
 
     # Optimise the administration and holiday durations and the IH strengths
     # t_step_IH_strength = [GF IH t, W IH t, comb t, h t, GF IH s, comb GF IH s
@@ -1976,19 +1952,8 @@ def minimise_MM_GF_W_h_IH_w(relative_weight_MMr):
     growth_rates_IH = [0.7, 1.3, 0.3, 0.3]
     decay_rates_IH = [1.0, 0.08, 0.2, 0.1]
 
-    # Payoff matrix when no drugs are present
-    matrix_no_GF_IH = np.array([
-        [0.0, 0.4, 0.65, 0.55],
-        [0.3, 0.0, -0.3, -0.3],
-        [0.6, 0.0, 0.2, 0.0],
-        [0.55, 0.0, -0.6, 0.4]])
-
-    # Payoff matrix when only GF inhibitor drugs are present
-    matrix_GF_IH = np.array([
-        [0.0, 0.4, 0.65, 0.55],
-        [0.3, 0.0, -0.3, -0.3],
-        [0.2, 0.0, 0.2, 0.0],
-        [0.55, 0.0, -0.6, 0.4]])
+    # Payoff matrices
+    matrix_no_GF_IH, matrix_GF_IH, matrix_IH_comb = optimise_matrix()
 
     # Optimise the administration and holiday durations and the IH strengths
     # t_step_IH_strength = [GF IH t, W IH t, h t, GF IH s, W IH s]
@@ -2037,19 +2002,8 @@ def minimise_MM_W_GF_h_IH_w(relative_weight_MMr):
     growth_rates_IH = [0.7, 1.3, 0.3, 0.3]
     decay_rates_IH = [1.0, 0.08, 0.2, 0.1]
 
-    # Payoff matrix when no drugs are present
-    matrix_no_GF_IH = np.array([
-        [0.0, 0.4, 0.65, 0.55],
-        [0.3, 0.0, -0.3, -0.3],
-        [0.6, 0.0, 0.2, 0.0],
-        [0.55, 0.0, -0.6, 0.4]])
-
-    # Payoff matrix when only GF inhibitor drugs are present
-    matrix_GF_IH = np.array([
-        [0.0, 0.4, 0.65, 0.55],
-        [0.3, 0.0, -0.3, -0.3],
-        [0.2, 0.0, 0.2, 0.0],
-        [0.55, 0.0, -0.6, 0.4]])
+    # Payoff matrices
+    matrix_no_GF_IH, matrix_GF_IH, matrix_IH_comb = optimise_matrix()
 
     # Optimise the administration and holiday durations and the IH strengths
     # t_step_IH_strength = [GF IH t, W IH t, h t, GF IH s, W IH s]
@@ -2100,26 +2054,8 @@ def minimise_MM_W_comb_GF_h_IH_w(relative_weight_MMr):
     growth_rates_IH = [0.7, 1.3, 0.3, 0.3]
     decay_rates_IH = [1.0, 0.08, 0.2, 0.1]
 
-    # Payoff matrix when no drugs are present
-    matrix_no_GF_IH = np.array([
-        [0.0, 0.4, 0.65, 0.55],
-        [0.3, 0.0, -0.3, -0.3],
-        [0.6, 0.0, 0.2, 0.0],
-        [0.55, 0.0, -0.6, 0.4]])
-
-    # Payoff matrix when only GF inhibitor drugs are present
-    matrix_GF_IH = np.array([
-        [0.0, 0.4, 0.65, 0.55],
-        [0.3, 0.0, -0.3, -0.3],
-        [0.2, 0.0, 0.2, 0.0],
-        [0.55, 0.0, -0.6, 0.4]])
-
-    # Payoff matrix when both inhibitor drugs are present
-    matrix_IH_comb = np.array([
-        [0.0, 0.4, 0.65, 0.55],
-        [0.3, 0.0, -0.3, -0.3],
-        [0.4, 0.0, 0.2, 0.0],
-        [0.55, 0.0, -0.8, 0.4]])
+    # Payoff matrices
+    matrix_no_GF_IH, matrix_GF_IH, matrix_IH_comb = optimise_matrix()
 
     # Optimise the administration and holiday durations and the IH strengths
     # t_step_IH_strength = [GF IH t, W IH t, comb t, h t, GF IH s, comb GF IH s
@@ -2175,26 +2111,8 @@ def minimise_MM_GF_comb_W_h_IH_w(relative_weight_MMr):
     growth_rates_IH = [0.7, 1.3, 0.3, 0.3]
     decay_rates_IH = [1.0, 0.08, 0.2, 0.1]
 
-    # Payoff matrix when no drugs are present
-    matrix_no_GF_IH = np.array([
-        [0.0, 0.4, 0.65, 0.55],
-        [0.3, 0.0, -0.3, -0.3],
-        [0.6, 0.0, 0.2, 0.0],
-        [0.55, 0.0, -0.6, 0.4]])
-
-    # Payoff matrix when only GF inhibitor drugs are present
-    matrix_GF_IH = np.array([
-        [0.0, 0.4, 0.65, 0.55],
-        [0.3, 0.0, -0.3, -0.3],
-        [0.2, 0.0, 0.2, 0.0],
-        [0.55, 0.0, -0.6, 0.4]])
-
-    # Payoff matrix when both inhibitor drugs are present
-    matrix_IH_comb = np.array([
-        [0.0, 0.4, 0.65, 0.55],
-        [0.3, 0.0, -0.3, -0.3],
-        [0.4, 0.0, 0.2, 0.0],
-        [0.55, 0.0, -0.8, 0.4]])
+    # Payoff matrices
+    matrix_no_GF_IH, matrix_GF_IH, matrix_IH_comb = optimise_matrix()
 
     # Optimise the administration and holiday durations and the IH strengths
     # t_step_IH_strength = [GF IH t, W IH t, comb t, h t, GF IH s, comb GF IH s
