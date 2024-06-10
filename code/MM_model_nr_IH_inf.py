@@ -2071,7 +2071,7 @@ def Figure_AT_MMd_MMr_limit(upper_limit_MMd, upper_limit_MMr):
     fig.legend(labels = legend_labels, loc='upper center', ncol=5,
                                                             fontsize='x-large')
 
-    # Save the data
+    # Save the figure 
     save_Figure(plt, 'line_plot_cell_nr_AT_limit_MMd_MMr',
                                  r'..\visualisation\results_model_nr_IH_inf')
 
