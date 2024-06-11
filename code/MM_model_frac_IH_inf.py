@@ -38,10 +38,10 @@ def main():
     # Do doc tests
     doctest.testmod()
 
-    # # Make a figure showing the cell fraction dynamics by traditional therapy
-    # # and by adaptive therapy
-    # list_t_steps_drug = [5, 5, 5]
-    # Figure_continuous_MTD_vs_AT_realistic(18, list_t_steps_drug)
+    # Make a figure showing the cell fraction dynamics by traditional therapy
+    # and by adaptive therapy
+    list_t_steps_drug = [5, 5, 5]
+    Figure_continuous_MTD_vs_AT_realistic(18, list_t_steps_drug)
 
     # Make a 3D figure showthing the effect of different drug holiday and
     # administration periods

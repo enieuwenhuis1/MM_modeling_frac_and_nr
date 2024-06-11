@@ -2071,7 +2071,7 @@ def Figure_AT_MMd_MMr_limit(upper_limit_MMd, upper_limit_MMr):
     fig.legend(labels = legend_labels, loc='upper center', ncol=5,
                                                             fontsize='x-large')
 
-    # Save the figure 
+    # Save the figure
     save_Figure(plt, 'line_plot_cell_nr_AT_limit_MMd_MMr',
                                  r'..\visualisation\results_model_nr_IH_inf')
 
@@ -2843,7 +2843,7 @@ def minimise_MM_W_GF_h_IH_w(relative_weight_MMr):
 
     # Optimise the administration and holiday durations and the IH strengths
     # t_step_IH_strength = [GF IH t, W IH t, h t, GF IH s, W IH s]
-    t_step_IH_strength = [2.200, 2.339, 2.286, 0.476,0.459]
+    t_step_IH_strength = [2.200, 2.339, 2.286, 0.476, 0.459]
     result = minimize(minimal_tumour_nr_t_3_situations_IH, t_step_IH_strength,
             args=(switch_dataframe_W_GF_h, relative_weight_MMr, nOC, nOB, nMMd,
             nMMr, growth_rates, growth_rates_IH, decay_rates, decay_rates_IH,
@@ -2896,7 +2896,7 @@ def minimise_MM_W_comb_GF_h_IH_w(relative_weight_MMr):
     # Optimise the administration and holiday durations and the IH strengths
     # t_step_IH_strength = [GF IH t, W IH t, comb t, h t, GF IH s, comb GF IH s
     # W IH s, comb W IH s]
-    t_step_IH_strength = [3.765, 2.725, 2.09, 2.775, 0.411, 0.119, 0.439, 0.08]
+    t_step_IH_strength = [3.765, 2.725, 2.090, 2.775, 0.411, 0.119, 0.439, 0.080]
     result = minimize(minimal_tumour_nr_t_4_situations_IH, t_step_IH_strength,
         args=(switch_dataframe_W_comb_GF_h, relative_weight_MMr, nOC, nOB, nMMd,
         nMMr, growth_rates, growth_rates_IH, decay_rates, decay_rates_IH,
